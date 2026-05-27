@@ -1192,9 +1192,9 @@
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
 
-    // ── Google Form submit (hidden iframe) ──
+    // ── Google Form submit (fetch — works on all devices) ──
     try {
-      const formData = new FormData();
+      const formData = new URLSearchParams();
       formData.append(FORM_ENTRIES.name,     name);
       formData.append(FORM_ENTRIES.phone,    phone);
       formData.append(FORM_ENTRIES.address,  address);
@@ -1202,33 +1202,12 @@
       formData.append(FORM_ENTRIES.quantity, qty);
       formData.append(FORM_ENTRIES.notes,    notes || '');
 
-      // Hidden iframe taake page redirect na ho
-      let iframe = document.getElementById('hidden-form-iframe');
-      if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.id   = 'hidden-form-iframe';
-        iframe.name = 'hidden-form-iframe';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-      }
-
-      const tempForm = document.createElement('form');
-      tempForm.method = 'POST';
-      tempForm.action = FORM_URL;
-      tempForm.target = 'hidden-form-iframe';
-
-      for (const [key, val] of formData.entries()) {
-        const input    = document.createElement('input');
-        input.type     = 'hidden';
-        input.name     = key;
-        input.value    = val;
-        tempForm.appendChild(input);
-      }
-
-      document.body.appendChild(tempForm);
-      tempForm.submit();
-      document.body.removeChild(tempForm);
-
+      fetch(FORM_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    formData.toString()
+      });
     } catch (err) {
       console.warn('Form submit error:', err);
     }
