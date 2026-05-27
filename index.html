@@ -1159,8 +1159,16 @@
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // ── Google Sheets API URL
-  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz6jaH16EzmnKwP6GnkOqNB5jRQ7XDp_zTovqgrxV9vnKrYxfaef-IsuWu-rhqg_-DY/exec';
+  // ── Google Form Entry IDs
+  const FORM_URL      = 'https://docs.google.com/forms/d/e/1FAIpQLSdcZKzpe4RVhCkJf0IZdDIq8NA5foE_MGUP4v-k3AecTEs_-w/formResponse';
+  const FORM_ENTRIES  = {
+    name:     'entry.1799790504',
+    phone:    'entry.505590384',
+    address:  'entry.484305494',
+    variant:  'entry.1952349481',
+    quantity: 'entry.152586957',
+    notes:    'entry.1380078148'
+  };
 
   // ── COD Order Form → Google Sheets + WhatsApp
   document.getElementById('orderForm').addEventListener('submit', async function(e) {
@@ -1184,45 +1192,45 @@
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
 
-    // Order data
-    const orderData = { name, phone, address, variant, quantity: qty, notes };
-
-    // ── Save to Google Sheets (JSONP method — CORS bypass) ──
+    // ── Google Form submit (hidden iframe) ──
     try {
-      await new Promise((resolve) => {
-        const params = new URLSearchParams({
-          name:     orderData.name,
-          phone:    orderData.phone,
-          address:  orderData.address,
-          variant:  orderData.variant,
-          quantity: orderData.quantity,
-          notes:    orderData.notes || ''
-        });
+      const formData = new FormData();
+      formData.append(FORM_ENTRIES.name,     name);
+      formData.append(FORM_ENTRIES.phone,    phone);
+      formData.append(FORM_ENTRIES.address,  address);
+      formData.append(FORM_ENTRIES.variant,  variant);
+      formData.append(FORM_ENTRIES.quantity, qty);
+      formData.append(FORM_ENTRIES.notes,    notes || '');
 
-        const script = document.createElement('script');
-        const cbName = 'aurraCallback_' + Date.now();
+      // Hidden iframe taake page redirect na ho
+      let iframe = document.getElementById('hidden-form-iframe');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id   = 'hidden-form-iframe';
+        iframe.name = 'hidden-form-iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
 
-        window[cbName] = function(response) {
-          console.log('Order saved:', response);
-          delete window[cbName];
-          document.body.removeChild(script);
-          resolve();
-        };
+      const tempForm = document.createElement('form');
+      tempForm.method = 'POST';
+      tempForm.action = FORM_URL;
+      tempForm.target = 'hidden-form-iframe';
 
-        script.onerror = function() {
-          console.warn('Sheet save error');
-          delete window[cbName];
-          resolve();
-        };
+      for (const [key, val] of formData.entries()) {
+        const input    = document.createElement('input');
+        input.type     = 'hidden';
+        input.name     = key;
+        input.value    = val;
+        tempForm.appendChild(input);
+      }
 
-        script.src = SHEETS_URL + '?' + params.toString() + '&callback=' + cbName;
-        document.body.appendChild(script);
+      document.body.appendChild(tempForm);
+      tempForm.submit();
+      document.body.removeChild(tempForm);
 
-        // 5 second timeout
-        setTimeout(resolve, 5000);
-      });
     } catch (err) {
-      console.warn('Sheets save error:', err);
+      console.warn('Form submit error:', err);
     }
 
     // ── WhatsApp Message ──
@@ -1242,22 +1250,22 @@
     successText.textContent = `Shukriya ${name}! ✅ Aapka order save ho gaya. Ab WhatsApp pe confirm ho raha hai...`;
     successMsg.classList.remove('hidden');
 
-    // Reset button
+    // Button green
     submitBtn.textContent = '✓ Order Place Ho Gaya!';
     submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
 
-    // Open WhatsApp
+    // WhatsApp open
     setTimeout(() => {
       window.open(`https://wa.me/923215595576?text=${encodeURIComponent(msg)}`, '_blank');
     }, 1200);
 
-    // Reset form after delay
+    // Reset
     setTimeout(() => {
       document.getElementById('orderForm').reset();
       successMsg.classList.add('hidden');
       submitBtn.textContent = 'Place My Order (Cash on Delivery)';
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
+      submitBtn.disabled    = false;
+      submitBtn.style.opacity    = '1';
       submitBtn.style.background = '';
     }, 5000);
   });
