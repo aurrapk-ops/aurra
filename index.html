@@ -70,14 +70,15 @@
       font-size: 0.6rem !important; letter-spacing: 0.2em !important;
     }
     .nav-cta:hover { background: var(--gold) !important; color: var(--dark) !important; }
-    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; justify-content: flex-end; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; align-items: flex-end; justify-self: end; }
     .nav-hamburger span { width: 24px; height: 1px; background: var(--gold2); display: block; }
     .nav-left-spacer { display: flex; }
     @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; grid-template-columns: 1fr auto 1fr; }
+      nav { padding: 1rem 1.5rem; grid-template-columns: 40px 1fr 40px; }
       nav.scrolled { padding: 0.8rem 1.5rem; }
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
+      .nav-left-spacer { visibility: hidden; }
     }
 
     /* Mobile Menu */
