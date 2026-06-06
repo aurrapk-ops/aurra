@@ -1030,14 +1030,44 @@
     btn.textContent = '⏳ Saving order...';
     btn.disabled = true;
 
-    // Submit to Google Form
+    // Submit to Google Form — Mobile + Desktop dono pe kaam karta hai
     try {
       const p = new URLSearchParams();
       p.append(ENTRIES.name, name); p.append(ENTRIES.phone, phone);
       p.append(ENTRIES.address, address); p.append(ENTRIES.variant, variant);
       p.append(ENTRIES.quantity, qty); p.append(ENTRIES.notes, notes || '');
       p.append('submit', 'Submit');
-      new Image().src = FORM_URL + '?' + p.toString();
+
+      const fullUrl = FORM_URL + '?' + p.toString();
+
+      // Method 1: fetch (mobile ke liye best)
+      fetch(fullUrl, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+
+      // Method 2: Image pixel (backup)
+      new Image().src = fullUrl;
+
+      // Method 3: Hidden iframe (extra backup)
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.name = 'aurra_submit_' + Date.now();
+      document.body.appendChild(iframe);
+      const tempForm = document.createElement('form');
+      tempForm.method = 'GET';
+      tempForm.action = FORM_URL;
+      tempForm.target = iframe.name;
+      tempForm.style.display = 'none';
+      for (const [key, val] of p.entries()) {
+        const inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = key; inp.value = val;
+        tempForm.appendChild(inp);
+      }
+      document.body.appendChild(tempForm);
+      tempForm.submit();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+        document.body.removeChild(tempForm);
+      }, 5000);
+
     } catch(err) { console.warn('Form error:', err); }
 
     // WhatsApp
