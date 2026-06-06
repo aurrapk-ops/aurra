@@ -1031,7 +1031,7 @@
     btn.textContent = '⏳ Saving order...';
     btn.disabled = true;
 
-    // ── Method 1: Apps Script (Gmail independent — sabse reliable) ──
+    // ── Method 1: Apps Script — JSONP (Gmail independent, har device pe kaam karta hai) ──
     try {
       const scriptParams = new URLSearchParams({
         name:     name,
@@ -1039,14 +1039,29 @@
         address:  address,
         variant:  variant,
         quantity: qty,
-        notes:    notes || ''
+        notes:    notes || '',
+        callback: 'handleOrderResponse'
       });
-      // GET request — no CORS issue, koi bhi device pe kaam karta hai
-      fetch(SCRIPT_URL + '?' + scriptParams.toString(), {
-        method: 'GET', mode: 'no-cors'
-      }).catch(() => {});
-      // Image backup bhi
-      new Image().src = SCRIPT_URL + '?' + scriptParams.toString();
+
+      window.handleOrderResponse = function(response) {
+        if (response.success) {
+          console.log('Order saved! #' + response.order);
+        } else {
+          console.warn('Order save failed:', response.error);
+        }
+        // Cleanup script tag
+        const s = document.getElementById('jsonp-script');
+        if (s) s.remove();
+      };
+
+      // Purana script tag remove karo agar pehle se hai
+      const old = document.getElementById('jsonp-script');
+      if (old) old.remove();
+
+      const script = document.createElement('script');
+      script.id  = 'jsonp-script';
+      script.src = SCRIPT_URL + '?' + scriptParams.toString();
+      document.body.appendChild(script);
     } catch(err) { console.warn('Script error:', err); }
 
     // ── Method 2: Google Form (extra backup) ──
