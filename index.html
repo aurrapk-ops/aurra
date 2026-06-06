@@ -124,13 +124,13 @@
     }
     .hero-script {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.6rem;
-      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      font-weight: 600;
       font-style: italic;
       color: var(--gold2);
       margin-bottom: 0.8rem;
       line-height: 1;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
     }
     .sec-script {
       font-family: 'Great Vibes', cursive;
@@ -706,7 +706,7 @@
 <!-- ════ NAVBAR ════ -->
 <nav id="navbar">
   <a href="#hero" style="text-decoration:none; display:flex; align-items:center; gap:0.75rem;">
-    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:38px; width:auto; object-fit:contain; filter:brightness(1.1);"/>
+    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:65px; width:auto; object-fit:contain; filter:brightness(1.1);"/>
   </a>
   <div class="nav-links">
     <a href="#collections">Collections</a>
@@ -722,7 +722,7 @@
 <!-- ════ HERO ════ -->
 <section id="hero">
   <div class="hero-left">
-    <div class="hero-script">AURRA KITCHENWARE</div>
+    <div class="hero-script">Aurra Kitchenware</div>
     <h1 class="hero-title">Shine Every<br/>Moment</h1>
     <p class="hero-sub">Handcrafted, premium stainless steel tray sets designed to bring timeless luxury and opulence to every Pakistani home.</p>
     <div class="hero-btns">
@@ -872,7 +872,7 @@
 <section id="order">
   <div class="order-inner">
     <div class="sec-head fade-in">
-      <span class="sec-script" style="color:var(--gold2);">No Advance Delivery Charges</span>
+      <h2 class="sec-title light" style="font-size:1.4rem; color:var(--gold2); letter-spacing:0.15em;">Advance Delivery Charges</h2>
       <h2 class="sec-title light">Order Now — COD</h2>
       <div class="gold-line"></div>
       <p class="sec-desc light">Fill your details. We'll contact you to confirm. Pay on delivery. All over Pakistan.</p>
