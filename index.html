@@ -232,106 +232,203 @@
     }
 
     /* ══════════════════════
-       COLLECTIONS
+       COLLECTIONS — Ecommerce Grid
     ══════════════════════ */
     #collections { padding: 7rem 4rem; background: var(--cream); }
     @media (max-width: 768px) { #collections { padding: 5rem 1.5rem; } }
 
-    /* Alternating layout */
-    .product-row {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 0; margin-bottom: 0;
-      border-top: 1px solid rgba(201,168,76,0.2);
+    .products-ecom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
     }
-    .product-row:last-child { border-bottom: 1px solid rgba(201,168,76,0.2); }
+    @media (max-width: 900px) { .products-ecom-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
+    @media (max-width: 540px) { .products-ecom-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
 
-    .product-img-side {
-      position: relative; overflow: hidden;
+    .pcard {
+      background: var(--white);
+      border: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column;
+      transition: box-shadow 0.3s, transform 0.3s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .pcard:hover {
+      box-shadow: 0 12px 40px rgba(201,168,76,0.18);
+      transform: translateY(-4px);
+    }
+    .pcard-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: var(--gold);
+      color: var(--darker);
+      font-size: 0.52rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; z-index: 2;
+    }
+    .pcard-img-wrap {
       background: var(--cream2);
-      min-height: 520px;
+      aspect-ratio: 1/1;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
     }
-    .product-img-side img {
-      width: 100%; height: 100%; object-fit: contain;
-      padding: 3rem; transition: transform 0.8s ease;
-      position: absolute; inset: 0;
+    .pcard-img-wrap img {
+      width: 85%; height: 85%; object-fit: contain;
+      transition: transform 0.6s ease;
     }
-    .product-row:hover .product-img-side img { transform: scale(1.05); }
-
-    .product-info-side {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 4rem 5rem; background: var(--white);
-      border-left: 1px solid rgba(201,168,76,0.2);
-      min-height: 520px;
+    .pcard:hover .pcard-img-wrap img { transform: scale(1.07); }
+    .pcard-body {
+      padding: 1.5rem 1.5rem 1.2rem;
+      display: flex; flex-direction: column; flex: 1;
     }
-    .product-row.reverse .product-img-side { order: 2; }
-    .product-row.reverse .product-info-side {
-      order: 1; border-left: none;
-      border-right: 1px solid rgba(201,168,76,0.2);
+    .pcard-tag {
+      font-size: 0.52rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold); font-weight: 600; margin-bottom: 0.5rem;
     }
-
-    /* Product Section Divider */
-    .product-divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 4rem;
-      background: var(--cream);
-    }
-    .pdiv-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-    .pdiv-icon {
-      color: var(--gold);
-      font-size: 0.8rem;
-      letter-spacing: 0.5em;
-      flex-shrink: 0;
-    }
-    @media (max-width: 768px) {
-      .product-divider { padding: 0.5rem 1.25rem; }
-    }
-
-    .prod-tag {
-      font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
-      color: var(--gold); font-weight: 600; margin-bottom: 1rem;
-    }
-    .prod-name {
+    .pcard-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3vw, 3rem); font-weight: 600;
-      color: var(--text); letter-spacing: 0.05em; margin-bottom: 0.5rem;
+      font-size: 1.5rem; font-weight: 600;
+      color: var(--text); margin-bottom: 0.4rem;
     }
-    .prod-price {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; color: var(--gold); font-weight: 500;
-      margin-bottom: 1.5rem;
-    }
-    .prod-price span { font-family: 'Jost', sans-serif; font-size: 0.75rem; color: #999; margin-left: 0.5rem; }
-    .prod-divider { width: 40px; height: 1px; background: var(--gold); margin-bottom: 1.5rem; }
-    .prod-desc {
-      font-size: 0.88rem; color: rgba(58,53,48,0.7);
-      line-height: 1.9; margin-bottom: 2rem; font-weight: 300;
-    }
-    .prod-features { list-style: none; margin-bottom: 2.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .prod-features li {
+    .pcard-desc {
       font-size: 0.78rem; color: rgba(58,53,48,0.6);
-      display: flex; align-items: center; gap: 0.6rem; font-weight: 400;
+      line-height: 1.7; margin-bottom: 1rem; font-weight: 300;
+      flex: 1;
     }
-    .prod-features li::before { content: '✦'; color: var(--gold); font-size: 0.5rem; flex-shrink: 0; }
+    .pcard-features {
+      list-style: none; margin-bottom: 1.2rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .pcard-features li {
+      font-size: 0.72rem; color: rgba(58,53,48,0.55);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .pcard-features li::before { content: '✦'; color: var(--gold); font-size: 0.45rem; flex-shrink: 0; }
+    .pcard-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(201,168,76,0.12);
+      background: rgba(201,168,76,0.03);
+    }
+    .pcard-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; color: var(--gold); font-weight: 600;
+    }
+    .pcard-price small {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.62rem; color: #aaa; margin-left: 0.3rem; font-weight: 400;
+    }
+    .pcard-btn {
+      background: var(--text);
+      color: var(--white);
+      border: none; cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 0.65rem 1.2rem;
+      transition: background 0.3s;
+    }
+    .pcard-btn:hover { background: var(--gold); color: var(--darker); }
 
-    @media (max-width: 768px) {
-      .product-row { grid-template-columns: 1fr; }
-      .product-row.reverse .product-img-side { order: 1; }
-      .product-row.reverse .product-info-side { order: 2; border-right: none; border-top: 1px solid rgba(201,168,76,0.2); }
-      .product-info-side { padding: 2.5rem 1.5rem; border-left: none; border-top: 1px solid rgba(201,168,76,0.2); min-height: auto; }
-      .product-img-side { min-height: 85vw; }
-      .product-img-side img { position: absolute; inset: 0; height: 100%; width: 100%; padding: 1.5rem; }
-      .prod-name { font-size: 2rem; }
+    /* ══════════════════════
+       ORDER POPUP MODAL
+    ══════════════════════ */
+    #orderModal {
+      position: fixed; inset: 0; z-index: 9000;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
     }
-    @media (max-width: 480px) {
-      .product-img-side { min-height: 90vw; }
-      .prod-features li { font-size: 0.72rem; }
+    #orderModal.open { display: flex; }
+    .om-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(10,9,8,0.88);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
     }
+    .om-box {
+      position: relative; z-index: 1;
+      background: var(--dark);
+      border: 1px solid rgba(201,168,76,0.25);
+      width: 100%; max-width: 560px;
+      max-height: 92vh; overflow-y: auto;
+      animation: omSlide 0.35s ease;
+    }
+    @keyframes omSlide {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .om-header {
+      padding: 1.5rem 2rem 1.2rem;
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--dark); z-index: 2;
+    }
+    .om-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 600;
+      color: var(--gold2); letter-spacing: 0.05em;
+    }
+    .om-close {
+      background: transparent; border: none;
+      color: rgba(255,255,255,0.4); font-size: 1.3rem;
+      cursor: pointer; line-height: 1; padding: 0.2rem 0.4rem;
+      transition: color 0.2s;
+    }
+    .om-close:hover { color: #e74c3c; }
+    .om-product-bar {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 2rem;
+      background: rgba(201,168,76,0.05);
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+    .om-product-img {
+      width: 60px; height: 60px; object-fit: contain;
+      background: var(--cream2); padding: 0.4rem; flex-shrink: 0;
+    }
+    .om-product-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 600; color: var(--white);
+    }
+    .om-product-price {
+      font-size: 0.82rem; color: var(--gold2); margin-top: 0.1rem;
+    }
+    .om-body { padding: 1.5rem 2rem 2rem; }
+    .om-body .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    @media (max-width: 500px) { .om-body .form-row-2 { grid-template-columns: 1fr; } }
+    .om-body .form-group { margin-bottom: 1.3rem; }
+    .om-body .form-label {
+      display: block; font-size: 0.56rem; letter-spacing: 0.25em;
+      text-transform: uppercase; color: rgba(201,168,76,0.7);
+      font-weight: 600; margin-bottom: 0.5rem;
+    }
+    .om-body .form-control {
+      width: 100%; background: transparent;
+      border: none; border-bottom: 1px solid rgba(201,168,76,0.3);
+      padding: 0.65rem 0; color: var(--white);
+      font-family: 'Jost', sans-serif; font-size: 0.88rem;
+      outline: none; transition: border-color 0.3s;
+    }
+    .om-body .form-control:focus { border-bottom-color: var(--gold2); }
+    .om-body .form-control option { background: var(--dark); }
+    .om-submit {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, var(--gold) 100%);
+      background-size: 200%;
+      color: var(--darker); font-family: 'Jost', sans-serif;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; border: none; cursor: pointer;
+      transition: all 0.4s; margin-top: 0.5rem;
+    }
+    .om-submit:hover { background-position: 100%; box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+    .om-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .om-success {
+      display: none; margin-top: 1rem; padding: 1rem;
+      border: 1px solid rgba(39,174,96,0.4); background: rgba(39,174,96,0.06);
+      text-align: center;
+    }
+    .om-success p { color: #4ade80; font-size: 0.82rem; }
 
     /* Heritage grid overflow fix */
     @media (max-width: 768px) {
@@ -753,73 +850,135 @@
     <div class="gold-line"></div>
     <p class="sec-desc">Discover our range of meticulously crafted serving pieces. Whether adorned in brilliant gold or polished stainless steel, each collection is designed to transform everyday serving into a work of art.</p>
   </div>
-  <!-- Products yahan dynamically load honge -->
-  <div id="collectionsContainer">
-    <!-- Fallback: Sheet load na ho toh yeh dikhega -->
-    <div class="product-row fade-in">
-      <div class="product-img-side">
+  <div class="products-ecom-grid" id="collectionsContainer">
+
+    <!-- Product 1: Golden Aura -->
+    <div class="pcard fade-in">
+      <div class="pcard-img-wrap">
         <img src="Golden_Aura.png" alt="Golden Aura"/>
       </div>
-      <div class="product-info-side">
-        <p class="prod-tag">Collection 01 — PVD Golden</p>
-        <h3 class="prod-name">Golden Aura</h3>
-        <div class="prod-price">Rs. 8,500 <span>/ 3 Pcs Set</span></div>
-        <div class="prod-divider"></div>
-        <p class="prod-desc">Our signature gold-toned collection brings regal heritage to your table. Featuring intricate floral engravings centered on a mirror-polish finish, these nested trays reflect warm light and create an atmosphere of opulent hospitality.</p>
-        <ul class="prod-features">
+      <div class="pcard-body">
+        <p class="pcard-tag">Collection 01 — PVD Golden</p>
+        <h3 class="pcard-name">Golden Aura</h3>
+        <p class="pcard-desc">Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.</p>
+        <ul class="pcard-features">
           <li>Pure PVD Golden Mirror Polish Finish</li>
           <li>Laser Engraved Floral Center Design</li>
           <li>Double Cylindrical Bar Handles</li>
           <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe • Scratch Resistant</li>
+          <li>100% Rust Free • Food Safe</li>
         </ul>
-        <a href="#order" class="btn-primary" style="align-self:flex-start;" onclick="selectVariantByName('Golden Aura')">Order Now — COD</a>
+      </div>
+      <div class="pcard-footer">
+        <div class="pcard-price">Rs. 8,500 <small>/ 3 Pcs</small></div>
+        <button class="pcard-btn" onclick="openOrderModal('Golden Aura','8,500','Golden_Aura.png','Collection 01 — PVD Golden')">Order Now</button>
       </div>
     </div>
-    <div class="product-divider fade-in"><div class="pdiv-line"></div><div class="pdiv-icon">✦</div><div class="pdiv-line"></div></div>
-    <div class="product-row reverse fade-in">
-      <div class="product-img-side">
+
+    <!-- Product 2: Imperial Gold -->
+    <div class="pcard fade-in">
+      <div class="pcard-badge">Most Popular</div>
+      <div class="pcard-img-wrap">
+        <img src="Imperial_Gold.png" alt="Imperial Gold"/>
+      </div>
+      <div class="pcard-body">
+        <p class="pcard-tag">Collection 03 — Dual Tone</p>
+        <h3 class="pcard-name">Imperial Gold</h3>
+        <p class="pcard-desc">Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.</p>
+        <ul class="pcard-features">
+          <li>Golden Tray Body with Silver Handles</li>
+          <li>Laser Engraved Floral Center Design</li>
+          <li>Mirror Polish Finish</li>
+          <li>3 Pcs Set — Small, Medium & Large</li>
+          <li>100% Rust Free • Food Safe</li>
+        </ul>
+      </div>
+      <div class="pcard-footer">
+        <div class="pcard-price">Rs. 8,000 <small>/ 3 Pcs</small></div>
+        <button class="pcard-btn" onclick="openOrderModal('Imperial Gold','8,000','Imperial_Gold.png','Collection 03 — Dual Tone')">Order Now</button>
+      </div>
+    </div>
+
+    <!-- Product 3: Pearl Silver -->
+    <div class="pcard fade-in">
+      <div class="pcard-img-wrap">
         <img src="Pearl_Silver.png" alt="Pearl Silver"/>
       </div>
-      <div class="product-info-side">
-        <p class="prod-tag">Collection 02 — Mirror Silver</p>
-        <h3 class="prod-name">Pearl Silver</h3>
-        <div class="prod-price">Rs. 7,000 <span>/ 3 Pcs Set</span></div>
-        <div class="prod-divider"></div>
-        <p class="prod-desc">Cool, luminous, and timelessly elegant. The Pearl Silver collection captures light with a flawless mirror polish and delicate floral engravings.</p>
-        <ul class="prod-features">
+      <div class="pcard-body">
+        <p class="pcard-tag">Collection 02 — Mirror Silver</p>
+        <h3 class="pcard-name">Pearl Silver</h3>
+        <p class="pcard-desc">Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.</p>
+        <ul class="pcard-features">
           <li>Pure Silver Mirror Polish Finish</li>
           <li>Laser Engraved Floral Center Design</li>
           <li>Double Cylindrical Bar Handles</li>
           <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe • Scratch Resistant</li>
+          <li>100% Rust Free • Food Safe</li>
         </ul>
-        <a href="#order" class="btn-primary" style="align-self:flex-start;" onclick="selectVariantByName('Pearl Silver')">Order Now — COD</a>
+      </div>
+      <div class="pcard-footer">
+        <div class="pcard-price">Rs. 7,000 <small>/ 3 Pcs</small></div>
+        <button class="pcard-btn" onclick="openOrderModal('Pearl Silver','7,000','Pearl_Silver.png','Collection 02 — Mirror Silver')">Order Now</button>
       </div>
     </div>
-    <div class="product-divider fade-in"><div class="pdiv-line"></div><div class="pdiv-icon">✦</div><div class="pdiv-line"></div></div>
-    <div class="product-row fade-in">
-      <div class="product-img-side">
-        <img src="Imperial_Gold.png" alt="Imperial Gold"/>
+
+  </div>
+</section>
+
+<!-- ════ ORDER MODAL ════ -->
+<div id="orderModal">
+  <div class="om-backdrop" onclick="closeOrderModal()"></div>
+  <div class="om-box">
+    <div class="om-header">
+      <div class="om-title">Place Your Order — COD</div>
+      <button class="om-close" onclick="closeOrderModal()">✕</button>
+    </div>
+    <div class="om-product-bar">
+      <img class="om-product-img" id="omProductImg" src="" alt=""/>
+      <div>
+        <div class="om-product-name" id="omProductName"></div>
+        <div class="om-product-price" id="omProductPrice"></div>
       </div>
-      <div class="product-info-side">
-        <p class="prod-tag">Collection 03 — Dual Tone ✦ Most Popular</p>
-        <h3 class="prod-name">Imperial Gold</h3>
-        <div class="prod-price">Rs. 8,000 <span>/ 3 Pcs Set</span></div>
-        <div class="prod-divider"></div>
-        <p class="prod-desc">The perfect fusion of warmth and refinement. Golden tray body paired with sleek silver steel handles creates a striking dual-tone contrast.</p>
-        <ul class="prod-features">
-          <li>Golden Tray Body with Silver Steel Handles</li>
-          <li>Laser Engraved Floral Center Design</li>
-          <li>Mirror Polish Finish</li>
-          <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe • Scratch Resistant</li>
-        </ul>
-        <a href="#order" class="btn-primary" style="align-self:flex-start;" onclick="selectVariantByName('Imperial Gold')">Order Now — COD</a>
+    </div>
+    <div class="om-body">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="om-body form-label">Full Name</label>
+          <input type="text" id="om_name" class="form-control" placeholder="Aapka naam"/>
+        </div>
+        <div class="form-group">
+          <label class="om-body form-label">Phone Number</label>
+          <input type="tel" id="om_phone" class="form-control" placeholder="03XX-XXXXXXX"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="om-body form-label">Delivery Address</label>
+        <input type="text" id="om_address" class="form-control" placeholder="Complete address with city"/>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="om-body form-label">Quantity</label>
+          <select id="om_qty" class="form-control">
+            <option value="1">1 Set</option>
+            <option value="2">2 Sets</option>
+            <option value="3">3 Sets</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="om-body form-label">Special Instructions</label>
+          <input type="text" id="om_notes" class="form-control" placeholder="Gift wrap, etc."/>
+        </div>
+      </div>
+      <button class="om-submit" id="omSubmitBtn" onclick="submitModalOrder()">
+        Place My Order — Cash on Delivery
+      </button>
+      <div class="om-success" id="omSuccess">
+        <p id="omSuccessText"></p>
+        <p style="margin-top:0.4rem; opacity:0.6; font-size:0.75rem;">Opening WhatsApp to confirm...</p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ════ CRAFTSMANSHIP ════ -->
 <section id="craftsmanship">
@@ -975,6 +1134,91 @@
 <script>
   // ── Config ──
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhks9B1vWeg1hcaxyPXH1BFszflzpQQ0WTIh3FzjmyaayLTLOfe7kedqKzarHYgtNQ/exec';
+
+  // ── Order Modal ──
+  let _modalVariant = '';
+
+  function openOrderModal(name, price, img, tag) {
+    _modalVariant = name + ' — Rs. ' + price;
+    document.getElementById('omProductName').textContent = name;
+    document.getElementById('omProductPrice').textContent = 'Rs. ' + price + ' / 3 Pcs Set';
+    document.getElementById('omProductImg').src = img;
+    document.getElementById('omProductImg').alt = name;
+    // Reset form
+    document.getElementById('om_name').value = '';
+    document.getElementById('om_phone').value = '';
+    document.getElementById('om_address').value = '';
+    document.getElementById('om_qty').value = '1';
+    document.getElementById('om_notes').value = '';
+    document.getElementById('omSuccess').style.display = 'none';
+    document.getElementById('omSubmitBtn').textContent = 'Place My Order — Cash on Delivery';
+    document.getElementById('omSubmitBtn').disabled = false;
+    document.getElementById('orderModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('om_name').focus(), 300);
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeOrderModal();
+  });
+
+  function submitModalOrder() {
+    const name    = document.getElementById('om_name').value.trim();
+    const phone   = document.getElementById('om_phone').value.trim();
+    const address = document.getElementById('om_address').value.trim();
+    const qty     = document.getElementById('om_qty').value;
+    const notes   = document.getElementById('om_notes').value.trim();
+    const variant = _modalVariant;
+
+    if (!name || !phone || !address) {
+      alert('Naam, phone aur address zaroor bharein.');
+      return;
+    }
+
+    const btn = document.getElementById('omSubmitBtn');
+    btn.textContent = '⏳ Order save ho raha hai...';
+    btn.disabled = true;
+
+    // ── JSONP save ──
+    try {
+      const paramStr = 'name='     + encodeURIComponent(name)
+                     + '&phone='   + encodeURIComponent(phone)
+                     + '&address=' + encodeURIComponent(address)
+                     + '&variant=' + encodeURIComponent(variant)
+                     + '&quantity='+ encodeURIComponent(qty)
+                     + '&notes='   + encodeURIComponent(notes || '')
+                     + '&callback=handleModalOrderResponse';
+
+      window.handleModalOrderResponse = function(response) {
+        if (response.success) console.log('Order saved! #' + response.order);
+        const s = document.getElementById('jsonp-modal-script');
+        if (s) s.remove();
+      };
+      const old = document.getElementById('jsonp-modal-script');
+      if (old) old.remove();
+      const script = document.createElement('script');
+      script.id  = 'jsonp-modal-script';
+      script.src = SCRIPT_URL + '?' + paramStr;
+      document.body.appendChild(script);
+    } catch(err) { console.warn(err); }
+
+    // ── WhatsApp message ──
+    const msg = 'Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ' + variant + '\n🔢 Qty: ' + qty + '\n👤 ' + name + '\n📞 ' + phone + '\n📍 ' + address + (notes ? '\n📝 ' + notes : '') + '\n\nCOD — Please confirm. Shukriya! ✨';
+
+    document.getElementById('omSuccessText').textContent = 'Shukriya ' + name + '! ✅ Order place ho gaya.';
+    document.getElementById('omSuccess').style.display = 'block';
+    btn.textContent = '✓ Order Placed!';
+    btn.style.background = '#27ae60';
+
+    setTimeout(() => window.open('https://wa.me/923215595576?text=' + encodeURIComponent(msg), '_blank'), 1000);
+    setTimeout(() => closeOrderModal(), 4000);
+  }
   const FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSdcZKzpe4RVhCkJf0IZdDIq8NA5foE_MGUP4v-k3AecTEs_-w/formResponse';
   const ENTRIES    = {
     name: 'entry.1799790504', phone: 'entry.505590384',
@@ -1050,37 +1294,31 @@
 
     let html = '';
     products.forEach((p, i) => {
-      const isReverse = i % 2 !== 0;
-      const featuresHtml = (p.features || [])
+      const priceNum = parseInt(p.price).toLocaleString();
+      const featuresHtml = (p.features || []).slice(0, 5)
         .map(f => '<li>' + f + '</li>').join('');
+      const isMostPopular = p.tag && p.tag.toLowerCase().includes('popular');
       html += `
-        <div class="product-row ${isReverse ? 'reverse' : ''} fade-in">
-          <div class="product-img-side">
+        <div class="pcard fade-in">
+          ${isMostPopular ? '<div class="pcard-badge">Most Popular</div>' : ''}
+          <div class="pcard-img-wrap">
             <img src="${p.image}" alt="${p.name}"/>
           </div>
-          <div class="product-info-side">
-            <p class="prod-tag">${p.tag}</p>
-            <h3 class="prod-name">${p.name}</h3>
-            <div class="prod-price">Rs. ${parseInt(p.price).toLocaleString()} <span>/ ${p.unit}</span></div>
-            <div class="prod-divider"></div>
-            <p class="prod-desc">${p.description}</p>
-            <ul class="prod-features">${featuresHtml}</ul>
-            <a href="#order" class="btn-primary" style="align-self:flex-start;"
-               onclick="selectVariantByName('${p.name}')">Order Now — COD</a>
+          <div class="pcard-body">
+            <p class="pcard-tag">${p.tag}</p>
+            <h3 class="pcard-name">${p.name}</h3>
+            <p class="pcard-desc">${p.description.substring(0, 120)}...</p>
+            <ul class="pcard-features">${featuresHtml}</ul>
+          </div>
+          <div class="pcard-footer">
+            <div class="pcard-price">Rs. ${priceNum} <small>/ ${p.unit}</small></div>
+            <button class="pcard-btn" onclick="openOrderModal('${p.name}','${priceNum}','${p.image}','${p.tag}')">Order Now</button>
           </div>
         </div>
       `;
-      if (i < products.length - 1) {
-        html += `<div class="product-divider fade-in">
-          <div class="pdiv-line"></div>
-          <div class="pdiv-icon">✦</div>
-          <div class="pdiv-line"></div>
-        </div>`;
-      }
     });
 
     container.innerHTML = html;
-    // Re-observe new fade-in elements
     container.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   }
 
