@@ -1020,92 +1020,157 @@
       background: rgba(0,0,0,0.95);
       backdrop-filter: blur(12px);
     }
-    #lightbox.open { display: flex; flex-direction: column; }
+    #lightbox.open { display: flex; }
 
-    .lb-top {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 100%; max-width: 860px;
-      padding-bottom: 0.8rem;
-    }
-    .lb-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem; color: var(--gold2);
-      letter-spacing: 0.1em; font-weight: 600;
-    }
-    .lb-counter {
-      font-size: 0.7rem; color: rgba(255,255,255,0.4);
-      letter-spacing: 0.2em;
-    }
-    .lb-close {
-      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
-      color: var(--gold2); width: 38px; height: 38px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 1rem; transition: all 0.2s;
-      border-radius: 0; flex-shrink: 0;
-    }
-    .lb-close:hover { background: rgba(201,168,76,0.25); }
-
-    .lb-main {
-      position: relative;
-      width: 100%; max-width: 860px;
-      display: flex; align-items: center; justify-content: center;
-      flex: 1; min-height: 0;
-    }
-    .lb-img-wrap {
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
+    .lb-container {
+      display: flex;
+      width: 100%; max-width: 1000px;
+      max-height: 90vh;
+      background: #1a1815;
+      border: 1px solid rgba(201,168,76,0.2);
       overflow: hidden;
-      max-height: calc(100vh - 220px);
+      position: relative;
+    }
+
+    /* ── Left: Image Panel ── */
+    .lb-left {
+      display: flex; flex-direction: column;
+      flex: 1.2; min-width: 0;
+      background: #111;
+    }
+
+    .lb-img-wrap {
+      flex: 1; min-height: 0;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      max-height: 55vh;
+      background: #0e0d0b;
     }
     .lb-img-wrap img {
       max-width: 100%; max-height: 100%;
       object-fit: contain;
       transition: opacity 0.3s ease, transform 0.3s ease;
-      user-select: none;
+      user-select: none; padding: 1rem;
     }
     .lb-img-wrap img.changing { opacity: 0; transform: scale(0.97); }
 
     .lb-nav {
       position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(30,28,26,0.8); border: 1px solid rgba(201,168,76,0.35);
-      color: var(--gold2); width: 48px; height: 48px;
+      background: rgba(30,28,26,0.85); border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold2); width: 42px; height: 42px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 1.1rem; transition: all 0.2s;
-      z-index: 2;
+      cursor: pointer; font-size: 1rem; transition: all 0.2s; z-index: 2;
     }
     .lb-nav:hover { background: rgba(201,168,76,0.2); border-color: var(--gold2); }
-    .lb-nav.lb-prev { left: -24px; }
-    .lb-nav.lb-next { right: -24px; }
-    @media (max-width: 768px) {
-      .lb-nav.lb-prev { left: 0; }
-      .lb-nav.lb-next { right: 0; }
+    .lb-nav.lb-prev { left: 8px; }
+    .lb-nav.lb-next { right: 8px; }
+
+    .lb-counter-bar {
+      text-align: center; padding: 0.4rem;
+      font-size: 0.65rem; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.2em; background: #111;
     }
 
     .lb-thumbs {
-      display: flex; gap: 0.6rem; justify-content: center;
-      padding-top: 1rem;
-      width: 100%; max-width: 860px;
-      overflow-x: auto;
+      display: flex; gap: 0.5rem; justify-content: center;
+      padding: 0.7rem 1rem;
+      background: #1a1815;
+      border-top: 1px solid rgba(201,168,76,0.1);
+      overflow-x: auto; flex-shrink: 0;
     }
     .lb-thumbs::-webkit-scrollbar { height: 3px; }
     .lb-thumbs::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); }
 
     .lb-thumb {
-      width: 72px; height: 72px; flex-shrink: 0;
-      border: 2px solid rgba(255,255,255,0.1);
+      width: 60px; height: 60px; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.08);
       cursor: pointer; overflow: hidden;
       transition: border-color 0.3s, transform 0.2s;
-      background: #1a1815;
+      background: #111;
     }
-    .lb-thumb img {
-      width: 100%; height: 100%; object-fit: contain; padding: 4px;
-    }
+    .lb-thumb img { width: 100%; height: 100%; object-fit: contain; padding: 3px; }
     .lb-thumb:hover { border-color: rgba(201,168,76,0.5); transform: translateY(-2px); }
     .lb-thumb.active { border-color: var(--gold2); }
 
-    @media (max-width: 480px) {
-      .lb-thumb { width: 54px; height: 54px; }
-      .lb-nav { width: 38px; height: 38px; font-size: 0.9rem; }
+    /* ── Right: Details Panel ── */
+    .lb-right {
+      width: 280px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      border-left: 1px solid rgba(201,168,76,0.15);
+      overflow-y: auto;
+    }
+    .lb-right::-webkit-scrollbar { width: 3px; }
+    .lb-right::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); }
+
+    .lb-close {
+      position: absolute; top: 0.8rem; right: 0.8rem;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold2); width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.9rem; transition: all 0.2s; z-index: 10;
+    }
+    .lb-close:hover { background: rgba(201,168,76,0.25); }
+
+    .lb-detail-top {
+      padding: 1.2rem 1.2rem 0.8rem;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+    .lb-detail-tag {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold2); margin-bottom: 0.4rem;
+    }
+    .lb-detail-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 600;
+      color: #f5f0e8; line-height: 1.2; margin-bottom: 0.6rem;
+    }
+    .lb-detail-price {
+      font-size: 1.1rem; color: var(--gold2);
+      font-weight: 600; letter-spacing: 0.05em;
+    }
+    .lb-detail-price small { font-size: 0.7rem; color: rgba(255,255,255,0.4); font-weight: 400; }
+
+    .lb-detail-body { padding: 1rem 1.2rem; flex: 1; }
+    .lb-detail-desc {
+      font-size: 0.78rem; color: rgba(255,255,255,0.55);
+      line-height: 1.7; margin-bottom: 1rem;
+    }
+    .lb-detail-features {
+      list-style: none; padding: 0; margin: 0 0 1rem;
+    }
+    .lb-detail-features li {
+      font-size: 0.72rem; color: rgba(255,255,255,0.5);
+      padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .lb-detail-features li::before {
+      content: '◆'; color: var(--gold2); font-size: 0.4rem; flex-shrink: 0;
+    }
+
+    .lb-detail-footer {
+      padding: 1rem 1.2rem;
+      border-top: 1px solid rgba(201,168,76,0.1);
+    }
+    .lb-order-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--gold2);
+      color: var(--gold2);
+      padding: 0.7rem;
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Jost', sans-serif;
+    }
+    .lb-order-btn:hover { background: var(--gold2); color: #1a1815; }
+
+    /* Mobile: stack vertically */
+    @media (max-width: 700px) {
+      .lb-container { flex-direction: column; max-height: 95vh; }
+      .lb-right { width: 100%; border-left: none; border-top: 1px solid rgba(201,168,76,0.15); max-height: 45vh; }
+      .lb-img-wrap { max-height: 35vh; min-height: 200px; }
+      .lb-thumb { width: 48px; height: 48px; }
     }
   </style>
 </head>
@@ -1176,7 +1241,7 @@
 
     <!-- Product 1: Golden Aura -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(this))">
+      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(this), {tag:'Collection 01 — PVD Golden', price:'8500', unit:'3 Pcs', description:'Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.', features:['Pure PVD Golden Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-golden">
           <div class="pcard-carousel-slides" id="slides-golden">
             <img src="Golden_Aura.png" alt="Golden Aura 1"/>
@@ -1218,7 +1283,7 @@
     <!-- Product 2: Imperial Gold -->
     <div class="pcard fade-in">
       <div class="pcard-badge">Most Popular</div>
-      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(this))">
+      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(this), {tag:'Collection 03 — Dual Tone', price:'8000', unit:'3 Pcs', description:'Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.', features:['Golden Tray Body with Silver Handles','Laser Engraved Floral Center Design','Mirror Polish Finish','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-imperial">
           <div class="pcard-carousel-slides" id="slides-imperial">
             <img src="Imperial_Gold.png" alt="Imperial Gold 1"/>
@@ -1259,7 +1324,7 @@
 
     <!-- Product 3: Pearl Silver -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(this))">
+      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(this), {tag:'Collection 02 — Mirror Silver', price:'7000', unit:'3 Pcs', description:'Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.', features:['Pure Silver Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-pearl">
           <div class="pcard-carousel-slides" id="slides-pearl">
             <img src="Pearl_Silver.png" alt="Pearl Silver 1"/>
@@ -1513,21 +1578,36 @@
 
 <!-- ════ LIGHTBOX ════ -->
 <div id="lightbox">
-  <div class="lb-top">
-    <div class="lb-title" id="lbTitle"></div>
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <div class="lb-counter" id="lbCounter"></div>
-      <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-container">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+
+    <!-- Left: Image + Thumbnails -->
+    <div class="lb-left">
+      <div class="lb-img-wrap">
+        <button class="lb-nav lb-prev" onclick="lbMove(-1)">&#8592;</button>
+        <img id="lbMainImg" src="" alt=""/>
+        <button class="lb-nav lb-next" onclick="lbMove(1)">&#8594;</button>
+      </div>
+      <div class="lb-counter-bar" id="lbCounter"></div>
+      <div class="lb-thumbs" id="lbThumbs"></div>
+    </div>
+
+    <!-- Right: Product Details -->
+    <div class="lb-right">
+      <div class="lb-detail-top">
+        <div class="lb-detail-tag" id="lbTag"></div>
+        <div class="lb-detail-name" id="lbTitle"></div>
+        <div class="lb-detail-price" id="lbPrice"></div>
+      </div>
+      <div class="lb-detail-body">
+        <p class="lb-detail-desc" id="lbDesc"></p>
+        <ul class="lb-detail-features" id="lbFeatures"></ul>
+      </div>
+      <div class="lb-detail-footer">
+        <button class="lb-order-btn" id="lbOrderBtn">Order Now</button>
+      </div>
     </div>
   </div>
-  <div class="lb-main">
-    <button class="lb-nav lb-prev" onclick="lbMove(-1)">&#8592;</button>
-    <div class="lb-img-wrap">
-      <img id="lbMainImg" src="" alt=""/>
-    </div>
-    <button class="lb-nav lb-next" onclick="lbMove(1)">&#8594;</button>
-  </div>
-  <div class="lb-thumbs" id="lbThumbs"></div>
 </div>
 
 <script>
@@ -1570,11 +1650,29 @@
   let lbIndex  = 0;
   let lbName   = '';
 
-  function openLightbox(name, images, startIndex) {
+  function openLightbox(name, images, startIndex, details) {
     lbName   = name;
     lbImages = images;
     lbIndex  = startIndex || 0;
+
+    // Title
     document.getElementById('lbTitle').textContent = name;
+
+    // Details panel
+    const d = details || {};
+    document.getElementById('lbTag').textContent      = d.tag || '';
+    document.getElementById('lbPrice').innerHTML      = d.price ? 'Rs. ' + parseInt(d.price).toLocaleString() + ' <small>/ ' + (d.unit||'set') + '</small>' : '';
+    document.getElementById('lbDesc').textContent     = d.description || '';
+    const featEl = document.getElementById('lbFeatures');
+    featEl.innerHTML = (d.features || []).map(f => '<li>' + f + '</li>').join('');
+
+    // Order button
+    const btn = document.getElementById('lbOrderBtn');
+    btn.onclick = () => {
+      closeLightbox();
+      if (d.price) openOrderModal(name, parseInt(d.price).toLocaleString(), images[0], d.tag || '');
+    };
+
     renderLbThumbs();
     lbShow(lbIndex);
     document.getElementById('lightbox').classList.add('open');
@@ -1920,7 +2018,7 @@
       html += `
         <div class="pcard fade-in">
           ${isMostPopular ? '<div class="pcard-badge">Most Popular</div>' : ''}
-          <div class="pcard-img-wrap" onclick="openLightbox('${p.name}', ${imgsJson}, cardState['${cid}']||0)">
+          <div class="pcard-img-wrap" onclick="openLightbox('${p.name}', ${imgsJson}, cardState['${cid}']||0, {tag:'${(p.tag||'').replace(/'/g,"\\'")}', price:'${p.price}', unit:'${p.unit||'set'}', description:'${(p.description||'').replace(/'/g,"\\'").substring(0,200)}', features:${JSON.stringify((p.features||[]).slice(0,5))}})">
             <div class="pcard-carousel" id="carousel-${cid}">
               <div class="pcard-carousel-slides" id="slides-${cid}">${slidesHtml}</div>
               <button class="pcard-arrow prev" onclick="event.stopPropagation();cardSlide('${cid}',-1)">&#8592;</button>
