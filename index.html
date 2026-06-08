@@ -6,8 +6,6 @@
   <title>Aurra Home — Shine Every Moment</title>
   <meta name="description" content="Aurra Home — Premium stainless steel tray sets. PVD golden coating, mirror silver polish, laser engraved. COD all over Pakistan."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <!-- Preload hero image for faster LCP -->
-  <link rel="preload" as="image" href="hero_lifestyle.webp" type="image/webp"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -669,7 +667,7 @@
     #craftsmanship::before {
       content: '';
       position: absolute; inset: 0;
-      background-image: url('Golden_Aura.webp');
+      background-image: url('Golden_Aura.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -941,6 +939,165 @@
     .fade-in:nth-child(2) { transition-delay: 0.1s; }
     .fade-in:nth-child(3) { transition-delay: 0.2s; }
     .fade-in:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ══════════════════════
+       PRODUCT IMAGE CAROUSEL
+    ══════════════════════ */
+    .pcard-img-wrap {
+      position: relative;
+      cursor: pointer;
+    }
+    .pcard-carousel {
+      width: 100%; height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .pcard-carousel-slides {
+      display: flex;
+      width: 100%; height: 100%;
+      transition: transform 0.4s ease;
+    }
+    .pcard-carousel-slides img {
+      min-width: 100%; width: 100%; height: 100%;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: transform 0.6s ease;
+    }
+    .pcard:hover .pcard-carousel-slides img { transform: none; }
+    .pcard-carousel-slides img:hover { transform: scale(1.04); }
+
+    .pcard-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(30,28,26,0.7); border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold2); width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 3; font-size: 0.85rem;
+      opacity: 0; transition: opacity 0.3s;
+      border-radius: 0;
+    }
+    .pcard-img-wrap:hover .pcard-arrow { opacity: 1; }
+    .pcard-arrow.prev { left: 0.5rem; }
+    .pcard-arrow.next { right: 0.5rem; }
+    .pcard-arrow:hover { background: rgba(201,168,76,0.3); }
+
+    .pcard-dots {
+      position: absolute; bottom: 0.6rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 5px; z-index: 3;
+    }
+    .pcard-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.4); cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none; padding: 0;
+    }
+    .pcard-dot.active { background: var(--gold2); transform: scale(1.3); }
+
+    .pcard-expand-icon {
+      position: absolute; top: 0.6rem; right: 0.6rem; z-index: 3;
+      background: rgba(30,28,26,0.7); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold2); width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; opacity: 0; transition: opacity 0.3s; cursor: pointer;
+    }
+    .pcard-img-wrap:hover .pcard-expand-icon { opacity: 1; }
+
+    /* ══════════════════════
+       LIGHTBOX
+    ══════════════════════ */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 99999;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(12px);
+    }
+    #lightbox.open { display: flex; flex-direction: column; }
+
+    .lb-top {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; max-width: 860px;
+      padding-bottom: 0.8rem;
+    }
+    .lb-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; color: var(--gold2);
+      letter-spacing: 0.1em; font-weight: 600;
+    }
+    .lb-counter {
+      font-size: 0.7rem; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.2em;
+    }
+    .lb-close {
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold2); width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; transition: all 0.2s;
+      border-radius: 0; flex-shrink: 0;
+    }
+    .lb-close:hover { background: rgba(201,168,76,0.25); }
+
+    .lb-main {
+      position: relative;
+      width: 100%; max-width: 860px;
+      display: flex; align-items: center; justify-content: center;
+      flex: 1; min-height: 0;
+    }
+    .lb-img-wrap {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      max-height: calc(100vh - 220px);
+    }
+    .lb-img-wrap img {
+      max-width: 100%; max-height: 100%;
+      object-fit: contain;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    .lb-img-wrap img.changing { opacity: 0; transform: scale(0.97); }
+
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(30,28,26,0.8); border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold2); width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.1rem; transition: all 0.2s;
+      z-index: 2;
+    }
+    .lb-nav:hover { background: rgba(201,168,76,0.2); border-color: var(--gold2); }
+    .lb-nav.lb-prev { left: -24px; }
+    .lb-nav.lb-next { right: -24px; }
+    @media (max-width: 768px) {
+      .lb-nav.lb-prev { left: 0; }
+      .lb-nav.lb-next { right: 0; }
+    }
+
+    .lb-thumbs {
+      display: flex; gap: 0.6rem; justify-content: center;
+      padding-top: 1rem;
+      width: 100%; max-width: 860px;
+      overflow-x: auto;
+    }
+    .lb-thumbs::-webkit-scrollbar { height: 3px; }
+    .lb-thumbs::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); }
+
+    .lb-thumb {
+      width: 72px; height: 72px; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.1);
+      cursor: pointer; overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+      background: #1a1815;
+    }
+    .lb-thumb img {
+      width: 100%; height: 100%; object-fit: contain; padding: 4px;
+    }
+    .lb-thumb:hover { border-color: rgba(201,168,76,0.5); transform: translateY(-2px); }
+    .lb-thumb.active { border-color: var(--gold2); }
+
+    @media (max-width: 480px) {
+      .lb-thumb { width: 54px; height: 54px; }
+      .lb-nav { width: 38px; height: 38px; font-size: 0.9rem; }
+    }
   </style>
 </head>
 <body>
@@ -967,7 +1124,7 @@
 
   <!-- Center: Logo -->
   <a href="#hero" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">
-    <img src="Logo_White.webp" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; filter:brightness(1.1);" loading="eager" decoding="async"/>
+    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; filter:brightness(1.1);"/>
   </a>
 
   <!-- Right: Nav links (desktop) ya Hamburger (mobile) -->
@@ -994,7 +1151,7 @@
     </div>
   </div>
   <div class="hero-right">
-    <img src="hero_lifestyle.webp" alt="Aurra Home Premium Tray" loading="eager" fetchpriority="high" decoding="async"/>
+    <img src="hero_lifestyle.jpg" alt="Aurra Home Premium Tray"/>
   </div>
 </section>
 
@@ -1010,8 +1167,26 @@
 
     <!-- Product 1: Golden Aura -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap">
-        <img src="Golden_Aura.webp" loading="lazy" decoding="async" alt="Golden Aura"/>
+      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(this))">
+        <div class="pcard-carousel" id="carousel-golden">
+          <div class="pcard-carousel-slides" id="slides-golden">
+            <img src="Golden_Aura_1.png" alt="Golden Aura 1"/>
+            <img src="Golden_Aura_2.png" alt="Golden Aura 2"/>
+            <img src="Golden_Aura_3.png" alt="Golden Aura 3"/>
+            <img src="Golden_Aura_4.png" alt="Golden Aura 4"/>
+            <img src="Golden_Aura_5.png" alt="Golden Aura 5"/>
+          </div>
+          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('golden',-1)">&#8592;</button>
+          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('golden',1)">&#8594;</button>
+          <div class="pcard-dots" id="dots-golden">
+            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('golden',0)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',1)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',2)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',3)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',4)"></button>
+          </div>
+        </div>
+        <div class="pcard-expand-icon" title="View Full">⤢</div>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 01 — PVD Golden</p>
@@ -1027,15 +1202,33 @@
       </div>
       <div class="pcard-footer">
         <div class="pcard-price">Rs. 8,500 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Golden Aura','8,500','Golden_Aura.webp','Collection 01 — PVD Golden')">Order Now</button>
+        <button class="pcard-btn" onclick="openOrderModal('Golden Aura','8,500','Golden_Aura.png','Collection 01 — PVD Golden')">Order Now</button>
       </div>
     </div>
 
     <!-- Product 2: Imperial Gold -->
     <div class="pcard fade-in">
       <div class="pcard-badge">Most Popular</div>
-      <div class="pcard-img-wrap">
-        <img src="Imperial_Gold.webp" loading="lazy" decoding="async" alt="Imperial Gold"/>
+      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(this))">
+        <div class="pcard-carousel" id="carousel-imperial">
+          <div class="pcard-carousel-slides" id="slides-imperial">
+            <img src="Imperial_Gold_1.png" alt="Imperial Gold 1"/>
+            <img src="Imperial_Gold_2.png" alt="Imperial Gold 2"/>
+            <img src="Imperial_Gold_3.png" alt="Imperial Gold 3"/>
+            <img src="Imperial_Gold_4.png" alt="Imperial Gold 4"/>
+            <img src="Imperial_Gold_5.png" alt="Imperial Gold 5"/>
+          </div>
+          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('imperial',-1)">&#8592;</button>
+          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('imperial',1)">&#8594;</button>
+          <div class="pcard-dots" id="dots-imperial">
+            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('imperial',0)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',1)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',2)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',3)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',4)"></button>
+          </div>
+        </div>
+        <div class="pcard-expand-icon" title="View Full">⤢</div>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 03 — Dual Tone</p>
@@ -1051,14 +1244,32 @@
       </div>
       <div class="pcard-footer">
         <div class="pcard-price">Rs. 8,000 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Imperial Gold','8,000','Imperial_Gold.webp','Collection 03 — Dual Tone')">Order Now</button>
+        <button class="pcard-btn" onclick="openOrderModal('Imperial Gold','8,000','Imperial_Gold.png','Collection 03 — Dual Tone')">Order Now</button>
       </div>
     </div>
 
     <!-- Product 3: Pearl Silver -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap">
-        <img src="Pearl_Silver.webp" loading="lazy" decoding="async" alt="Pearl Silver"/>
+      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(this))">
+        <div class="pcard-carousel" id="carousel-pearl">
+          <div class="pcard-carousel-slides" id="slides-pearl">
+            <img src="Pearl_Silver_1.png" alt="Pearl Silver 1"/>
+            <img src="Pearl_Silver_2.png" alt="Pearl Silver 2"/>
+            <img src="Pearl_Silver_3.png" alt="Pearl Silver 3"/>
+            <img src="Pearl_Silver_4.png" alt="Pearl Silver 4"/>
+            <img src="Pearl_Silver_5.png" alt="Pearl Silver 5"/>
+          </div>
+          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('pearl',-1)">&#8592;</button>
+          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('pearl',1)">&#8594;</button>
+          <div class="pcard-dots" id="dots-pearl">
+            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('pearl',0)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',1)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',2)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',3)"></button>
+            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',4)"></button>
+          </div>
+        </div>
+        <div class="pcard-expand-icon" title="View Full">⤢</div>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 02 — Mirror Silver</p>
@@ -1074,7 +1285,7 @@
       </div>
       <div class="pcard-footer">
         <div class="pcard-price">Rs. 7,000 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Pearl Silver','7,000','Pearl_Silver.webp','Collection 02 — Mirror Silver')">Order Now</button>
+        <button class="pcard-btn" onclick="openOrderModal('Pearl Silver','7,000','Pearl_Silver.png','Collection 02 — Mirror Silver')">Order Now</button>
       </div>
     </div>
 
@@ -1178,7 +1389,7 @@
     </div>
     <p class="about-quote fade-in">"Serving is not merely an action — it is an expression of hospitality and love."</p>
     <p class="about-text fade-in">Aurra Home is dedicated to offering handcrafted, premium stainless steel tray sets designed to bring luxury to every Pakistani home. Our collections are crafted to honor those moments, ensuring that every gathering is framed in absolute beauty. From our workshop to your doorstep — Aurra Home delivers quality you can see, feel, and trust.</p>
-    <img src="Imperial_Gold.webp" loading="lazy" decoding="async" alt="Aurra Tray" class="about-img fade-in"/>
+    <img src="Imperial_Gold.png" alt="Aurra Tray" class="about-img fade-in"/>
     <a href="#order" class="btn-primary fade-in">Order Your Set Today</a>
   </div>
 </section>
@@ -1266,7 +1477,7 @@
 <!-- ════ FOOTER ════ -->
 <footer>
   <div class="footer-inner">
-    <img src="Logo_White.webp" loading="lazy" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; margin:0 auto 1.2rem; display:block; opacity:0.85;"/>
+    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; margin:0 auto 1.2rem; display:block; opacity:0.85;"/>
     <div class="footer-brand">AURRA KITCHENWARE</div>
     <div class="footer-tagline">Shine Every Moment</div>
     <p class="footer-desc">Transform everyday serving into a work of art that lasts for generations. Premium stainless steel tray sets — crafted for Pakistani homes.</p>
@@ -1291,9 +1502,141 @@
   </div>
 </footer>
 
+<!-- ════ LIGHTBOX ════ -->
+<div id="lightbox">
+  <div class="lb-top">
+    <div class="lb-title" id="lbTitle"></div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="lb-counter" id="lbCounter"></div>
+      <button class="lb-close" onclick="closeLightbox()">✕</button>
+    </div>
+  </div>
+  <div class="lb-main">
+    <button class="lb-nav lb-prev" onclick="lbMove(-1)">&#8592;</button>
+    <div class="lb-img-wrap">
+      <img id="lbMainImg" src="" alt=""/>
+    </div>
+    <button class="lb-nav lb-next" onclick="lbMove(1)">&#8594;</button>
+  </div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
 <script>
   // ── Config ──
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhks9B1vWeg1hcaxyPXH1BFszflzpQQ0WTIh3FzjmyaayLTLOfe7kedqKzarHYgtNQ/exec';
+
+  // ── Product Images Data ──
+  const goldenAuraImgs   = ['Golden_Aura_1.png','Golden_Aura_2.png','Golden_Aura_3.png','Golden_Aura_4.png','Golden_Aura_5.png'];
+  const imperialGoldImgs = ['Imperial_Gold_1.png','Imperial_Gold_2.png','Imperial_Gold_3.png','Imperial_Gold_4.png','Imperial_Gold_5.png'];
+  const pearlSilverImgs  = ['Pearl_Silver_1.png','Pearl_Silver_2.png','Pearl_Silver_3.png','Pearl_Silver_4.png','Pearl_Silver_5.png'];
+
+  // ── Card Carousel State ──
+  const cardState = { golden: 0, imperial: 0, pearl: 0 };
+
+  function cardGoTo(id, idx) {
+    const total  = 5;
+    cardState[id] = (idx + total) % total;
+    const slides = document.getElementById('slides-' + id);
+    if (slides) slides.style.transform = 'translateX(-' + (cardState[id] * 100) + '%)';
+    const dotsEl = document.getElementById('dots-' + id);
+    if (dotsEl) {
+      dotsEl.querySelectorAll('.pcard-dot').forEach((d, i) => d.classList.toggle('active', i === cardState[id]));
+    }
+  }
+
+  function cardSlide(id, dir) {
+    cardGoTo(id, cardState[id] + dir);
+  }
+
+  function currentSlide(wrapEl) {
+    // Find which carousel is inside this wrap and return current index
+    const carousel = wrapEl.querySelector('.pcard-carousel');
+    if (!carousel) return 0;
+    const id = carousel.id.replace('carousel-', '');
+    return cardState[id] || 0;
+  }
+
+  // ── Lightbox ──
+  let lbImages = [];
+  let lbIndex  = 0;
+  let lbName   = '';
+
+  function openLightbox(name, images, startIndex) {
+    lbName   = name;
+    lbImages = images;
+    lbIndex  = startIndex || 0;
+    document.getElementById('lbTitle').textContent = name;
+    renderLbThumbs();
+    lbShow(lbIndex);
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function lbShow(idx) {
+    lbIndex = (idx + lbImages.length) % lbImages.length;
+    const img = document.getElementById('lbMainImg');
+    img.classList.add('changing');
+    setTimeout(() => {
+      img.src = lbImages[lbIndex];
+      img.alt = lbName + ' — Image ' + (lbIndex + 1);
+      img.classList.remove('changing');
+    }, 150);
+    document.getElementById('lbCounter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+    // Update thumb active state
+    document.querySelectorAll('.lb-thumb').forEach((t, i) => t.classList.toggle('active', i === lbIndex));
+  }
+
+  function lbMove(dir) {
+    lbShow(lbIndex + dir);
+  }
+
+  function renderLbThumbs() {
+    const container = document.getElementById('lbThumbs');
+    container.innerHTML = lbImages.map((src, i) => `
+      <div class="lb-thumb ${i === lbIndex ? 'active' : ''}" onclick="lbShow(${i})">
+        <img src="${src}" alt="${lbName} ${i+1}" loading="lazy"/>
+      </div>
+    `).join('');
+  }
+
+  // Keyboard navigation for lightbox
+  document.addEventListener('keydown', function(e) {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'ArrowRight') lbMove(1);
+    if (e.key === 'ArrowLeft')  lbMove(-1);
+    if (e.key === 'Escape')     closeLightbox();
+  });
+
+  // Click backdrop to close lightbox
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  // Touch/swipe support for lightbox
+  let lbTouchStartX = 0;
+  document.getElementById('lightbox').addEventListener('touchstart', e => { lbTouchStartX = e.touches[0].clientX; }, {passive:true});
+  document.getElementById('lightbox').addEventListener('touchend', e => {
+    const diff = lbTouchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) lbMove(diff > 0 ? 1 : -1);
+  }, {passive:true});
+
+  // Touch/swipe support for card carousels
+  ['golden','imperial','pearl'].forEach(id => {
+    const el = document.getElementById('carousel-' + id);
+    if (!el) return;
+    let startX = 0;
+    el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+    el.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) cardSlide(id, diff > 0 ? 1 : -1);
+    }, {passive:true});
+  });
 
   // ── Phone Validation ──
   function validatePhone(input) {
