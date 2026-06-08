@@ -270,9 +270,10 @@
     }
     .pcard-img-wrap {
       background: var(--cream2);
-      aspect-ratio: 1/1;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative;
+      display: block;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
     }
     .pcard-img-wrap img {
       width: 85%; height: 85%; object-fit: contain;
@@ -943,24 +944,32 @@
     /* ══════════════════════
        PRODUCT IMAGE CAROUSEL
     ══════════════════════ */
-    .pcard-img-wrap {
-      position: relative;
-      cursor: pointer;
-    }
     .pcard-carousel {
-      width: 100%; height: 100%;
+      width: 100%;
       position: relative;
       overflow: hidden;
+      aspect-ratio: 1/1;
+      height: 0;
+      padding-bottom: 100%;
     }
     .pcard-carousel-slides {
+      position: absolute;
+      top: 0; left: 0;
       display: flex;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       transition: transform 0.4s ease;
+      will-change: transform;
     }
     .pcard-carousel-slides img {
-      min-width: 100%; width: 100%; height: 100%;
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
       object-fit: contain;
       flex-shrink: 0;
+      display: block;
+      background: var(--cream2);
       transition: transform 0.6s ease;
     }
     .pcard:hover .pcard-carousel-slides img { transform: none; }
@@ -1171,10 +1180,10 @@
         <div class="pcard-carousel" id="carousel-golden">
           <div class="pcard-carousel-slides" id="slides-golden">
             <img src="Golden_Aura.png" alt="Golden Aura 1"/>
-            <img src="Golden_Aura_2.png" alt="Golden Aura 2"/>
-            <img src="Golden_Aura_3.png" alt="Golden Aura 3"/>
-            <img src="Golden_Aura_4.png" alt="Golden Aura 4"/>
-            <img src="Golden_Aura_5.png" alt="Golden Aura 5"/>
+            <img src="Golden_Aura_2.jpg" alt="Golden Aura 2"/>
+            <img src="Golden_Aura_3.jpg" alt="Golden Aura 3"/>
+            <img src="Golden_Aura_4.jpg" alt="Golden Aura 4"/>
+            <img src="Golden_Aura_5.jpg" alt="Golden Aura 5"/>
           </div>
           <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('golden',-1)">&#8592;</button>
           <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('golden',1)">&#8594;</button>
@@ -1213,10 +1222,10 @@
         <div class="pcard-carousel" id="carousel-imperial">
           <div class="pcard-carousel-slides" id="slides-imperial">
             <img src="Imperial_Gold.png" alt="Imperial Gold 1"/>
-            <img src="Imperial_Gold_2.png" alt="Imperial Gold 2"/>
-            <img src="Imperial_Gold_3.png" alt="Imperial Gold 3"/>
-            <img src="Imperial_Gold_4.png" alt="Imperial Gold 4"/>
-            <img src="Imperial_Gold_5.png" alt="Imperial Gold 5"/>
+            <img src="Imperial_Gold_2.jpg" alt="Imperial Gold 2"/>
+            <img src="Imperial_Gold_3.jpg" alt="Imperial Gold 3"/>
+            <img src="Imperial_Gold_4.jpg" alt="Imperial Gold 4"/>
+            <img src="Imperial_Gold_5.jpg" alt="Imperial Gold 5"/>
           </div>
           <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('imperial',-1)">&#8592;</button>
           <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('imperial',1)">&#8594;</button>
@@ -1254,10 +1263,10 @@
         <div class="pcard-carousel" id="carousel-pearl">
           <div class="pcard-carousel-slides" id="slides-pearl">
             <img src="Pearl_Silver.png" alt="Pearl Silver 1"/>
-            <img src="Pearl_Silver_2.png" alt="Pearl Silver 2"/>
-            <img src="Pearl_Silver_3.png" alt="Pearl Silver 3"/>
-            <img src="Pearl_Silver_4.png" alt="Pearl Silver 4"/>
-            <img src="Pearl_Silver_5.png" alt="Pearl Silver 5"/>
+            <img src="Pearl_Silver_2.jpg" alt="Pearl Silver 2"/>
+            <img src="Pearl_Silver_3.jpg" alt="Pearl Silver 3"/>
+            <img src="Pearl_Silver_4.jpg" alt="Pearl Silver 4"/>
+            <img src="Pearl_Silver_5.jpg" alt="Pearl Silver 5"/>
           </div>
           <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('pearl',-1)">&#8592;</button>
           <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('pearl',1)">&#8594;</button>
@@ -1526,9 +1535,9 @@
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhks9B1vWeg1hcaxyPXH1BFszflzpQQ0WTIh3FzjmyaayLTLOfe7kedqKzarHYgtNQ/exec';
 
   // ── Product Images Data ──
-  const goldenAuraImgs   = ['Golden_Aura.png','Golden_Aura_2.png','Golden_Aura_3.png','Golden_Aura_4.png','Golden_Aura_5.png'];
-  const imperialGoldImgs = ['Imperial_Gold.png','Imperial_Gold_2.png','Imperial_Gold_3.png','Imperial_Gold_4.png','Imperial_Gold_5.png'];
-  const pearlSilverImgs  = ['Pearl_Silver.png','Pearl_Silver_2.png','Pearl_Silver_3.png','Pearl_Silver_4.png','Pearl_Silver_5.png'];
+  const goldenAuraImgs   = ['Golden_Aura.png','Golden_Aura_2.jpg','Golden_Aura_3.jpg','Golden_Aura_4.jpg','Golden_Aura_5.jpg'];
+  const imperialGoldImgs = ['Imperial_Gold.png','Imperial_Gold_2.jpg','Imperial_Gold_3.jpg','Imperial_Gold_4.jpg','Imperial_Gold_5.jpg'];
+  const pearlSilverImgs  = ['Pearl_Silver.png','Pearl_Silver_2.jpg','Pearl_Silver_3.jpg','Pearl_Silver_4.jpg','Pearl_Silver_5.jpg'];
 
   // ── Card Carousel State ──
   const cardState = { golden: 0, imperial: 0, pearl: 0 };
@@ -1885,16 +1894,17 @@
         .map(f => '<li>' + f + '</li>').join('');
       const isMostPopular = p.tag && p.tag.toLowerCase().includes('popular');
 
-      // Build carousel images: first image = p.image, then _2 to _5
-      const baseImg  = p.image; // e.g. Golden_Aura.png
-      const baseName = baseImg.replace(/\.[^.]+$/, ''); // Golden_Aura
-      const ext      = baseImg.match(/\.[^.]+$/)?.[0] || '.png'; // .png
+      // Build carousel images: first image = p.image (.png), then _2 to _5 (.jpg)
+      const baseImg  = p.image;
+      const baseName = baseImg.replace(/\.[^.]+$/, '');
+
+      // All products: first image .png, rest .jpg
       const imgs = [
         baseImg,
-        baseName + '_2' + ext,
-        baseName + '_3' + ext,
-        baseName + '_4' + ext,
-        baseName + '_5' + ext
+        baseName + '_2.jpg',
+        baseName + '_3.jpg',
+        baseName + '_4.jpg',
+        baseName + '_5.jpg'
       ];
       const imgsJson = JSON.stringify(imgs);
       const cid = 'dyn' + i;
