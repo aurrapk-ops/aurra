@@ -1884,11 +1884,40 @@
       const featuresHtml = (p.features || []).slice(0, 5)
         .map(f => '<li>' + f + '</li>').join('');
       const isMostPopular = p.tag && p.tag.toLowerCase().includes('popular');
+
+      // Build carousel images: first image = p.image, then _2 to _5
+      const baseImg  = p.image; // e.g. Golden_Aura.png
+      const baseName = baseImg.replace(/\.[^.]+$/, ''); // Golden_Aura
+      const ext      = baseImg.match(/\.[^.]+$/)?.[0] || '.png'; // .png
+      const imgs = [
+        baseImg,
+        baseName + '_2' + ext,
+        baseName + '_3' + ext,
+        baseName + '_4' + ext,
+        baseName + '_5' + ext
+      ];
+      const imgsJson = JSON.stringify(imgs);
+      const cid = 'dyn' + i;
+
+      const dotsHtml = imgs.map((_, di) =>
+        `<button class="pcard-dot ${di===0?'active':''}" onclick="event.stopPropagation();cardGoTo('${cid}',${di})"></button>`
+      ).join('');
+
+      const slidesHtml = imgs.map((src, si) =>
+        `<img src="${src}" alt="${p.name} ${si+1}" loading="${si===0?'eager':'lazy'}"/>`
+      ).join('');
+
       html += `
         <div class="pcard fade-in">
           ${isMostPopular ? '<div class="pcard-badge">Most Popular</div>' : ''}
-          <div class="pcard-img-wrap">
-            <img src="${p.image}" alt="${p.name}"/>
+          <div class="pcard-img-wrap" onclick="openLightbox('${p.name}', ${imgsJson}, cardState['${cid}']||0)">
+            <div class="pcard-carousel" id="carousel-${cid}">
+              <div class="pcard-carousel-slides" id="slides-${cid}">${slidesHtml}</div>
+              <button class="pcard-arrow prev" onclick="event.stopPropagation();cardSlide('${cid}',-1)">&#8592;</button>
+              <button class="pcard-arrow next" onclick="event.stopPropagation();cardSlide('${cid}',1)">&#8594;</button>
+              <div class="pcard-dots" id="dots-${cid}">${dotsHtml}</div>
+            </div>
+            <div class="pcard-expand-icon" title="View Full">⤢</div>
           </div>
           <div class="pcard-body">
             <p class="pcard-tag">${p.tag}</p>
@@ -1905,6 +1934,21 @@
     });
 
     container.innerHTML = html;
+
+    // Register new carousel IDs in cardState + touch support
+    products.forEach((p, i) => {
+      const cid = 'dyn' + i;
+      if (!(cid in cardState)) cardState[cid] = 0;
+      const el = document.getElementById('carousel-' + cid);
+      if (!el) return;
+      let startX = 0;
+      el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+      el.addEventListener('touchend', e => {
+        const diff = startX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) cardSlide(cid, diff > 0 ? 1 : -1);
+      }, {passive:true});
+    });
+
     container.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   }
 
