@@ -6,6 +6,8 @@
   <title>Aurra Home — Shine Every Moment</title>
   <meta name="description" content="Aurra Home — Premium stainless steel tray sets. PVD golden coating, mirror silver polish, laser engraved. COD all over Pakistan."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <!-- Preload hero image for faster LCP -->
+  <link rel="preload" as="image" href="hero_lifestyle.webp" type="image/webp"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -331,135 +333,6 @@
       transition: background 0.3s;
     }
     .pcard-btn:hover { background: var(--gold); color: var(--darker); }
-
-    /* ══ PRODUCT IMAGE GALLERY ══ */
-    .pcard-img-wrap {
-      position: relative; overflow: hidden;
-      background: var(--cream2); aspect-ratio: 1/1;
-      cursor: zoom-in;
-    }
-    .pcard-img-main {
-      width: 100%; height: 100%; object-fit: contain;
-      padding: 1.2rem;
-      transition: transform 0.5s ease;
-    }
-    .pcard:hover .pcard-img-main { transform: scale(1.05); }
-    .pcard-img-zoom-hint {
-      position: absolute; bottom: 0.6rem; right: 0.6rem;
-      background: rgba(0,0,0,0.45); color: rgba(255,255,255,0.8);
-      font-size: 0.55rem; padding: 0.25rem 0.5rem;
-      letter-spacing: 0.1em; pointer-events: none;
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .pcard-img-wrap:hover .pcard-img-zoom-hint { opacity: 1; }
-
-    /* Thumbnails */
-    .pcard-thumbs {
-      display: flex; gap: 0.4rem; padding: 0.6rem 0.8rem;
-      background: var(--cream2); border-top: 1px solid rgba(201,168,76,0.1);
-      overflow-x: auto; scrollbar-width: none;
-    }
-    .pcard-thumbs::-webkit-scrollbar { display: none; }
-    .pcard-thumb {
-      width: 44px; height: 44px; flex-shrink: 0;
-      border: 2px solid transparent; cursor: pointer;
-      object-fit: contain; padding: 3px;
-      background: white; transition: border-color 0.2s;
-    }
-    .pcard-thumb.active  { border-color: var(--gold); }
-    .pcard-thumb:hover   { border-color: rgba(201,168,76,0.5); }
-
-    /* ══ LIGHTBOX ══ */
-    #lightbox {
-      position: fixed; inset: 0; z-index: 99999;
-      display: none; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.96);
-      padding: 1rem;
-    }
-    #lightbox.open { display: flex; }
-    .lb-inner {
-      position: relative; width: 100%; max-width: 820px;
-      display: flex; flex-direction: column; align-items: center;
-      animation: lbIn 0.3s ease;
-    }
-    @keyframes lbIn {
-      from { opacity:0; transform: scale(0.92); }
-      to   { opacity:1; transform: scale(1); }
-    }
-    .lb-img-wrap {
-      width: 100%; max-height: 72vh;
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-    }
-    #lbMainImg {
-      max-width: 100%; max-height: 70vh;
-      object-fit: contain;
-      transition: opacity 0.25s;
-    }
-    .lb-arrow {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.8); width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 1.1rem; border-radius: 50%;
-      transition: all 0.2s; user-select: none; z-index: 2;
-    }
-    .lb-arrow:hover { background: rgba(201,168,76,0.3); border-color: var(--gold); color: var(--gold2); }
-    .lb-arrow.left  { left: -1rem; }
-    .lb-arrow.right { right: -1rem; }
-    @media (max-width: 600px) {
-      .lb-arrow.left  { left: 0.2rem; }
-      .lb-arrow.right { right: 0.2rem; }
-    }
-    .lb-thumbs {
-      display: flex; gap: 0.5rem; margin-top: 1rem;
-      overflow-x: auto; max-width: 100%; padding: 0.3rem;
-      scrollbar-width: none;
-    }
-    .lb-thumbs::-webkit-scrollbar { display: none; }
-    .lb-thumb {
-      width: 56px; height: 56px; flex-shrink: 0;
-      object-fit: contain; padding: 4px;
-      background: rgba(255,255,255,0.06);
-      border: 2px solid transparent; cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .lb-thumb.active  { border-color: var(--gold); }
-    .lb-thumb:hover   { border-color: rgba(201,168,76,0.5); }
-    .lb-info {
-      margin-top: 1rem; text-align: center;
-    }
-    .lb-product-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem; font-weight: 600;
-      color: var(--gold2); letter-spacing: 0.05em;
-      margin-bottom: 0.2rem;
-    }
-    .lb-product-price {
-      font-size: 0.8rem; color: rgba(255,255,255,0.45);
-      letter-spacing: 0.1em;
-    }
-    .lb-counter {
-      font-size: 0.6rem; color: rgba(255,255,255,0.3);
-      letter-spacing: 0.2em; margin-top: 0.4rem;
-    }
-    .lb-close {
-      position: fixed; top: 1.2rem; right: 1.2rem;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.7); width: 38px; height: 38px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 1rem; transition: all 0.2s;
-    }
-    .lb-close:hover { background: rgba(231,76,60,0.3); border-color: #e74c3c; color: white; }
-    .lb-order-btn {
-      margin-top: 1.2rem;
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color: var(--darker); border: none; cursor: pointer;
-      font-family: 'Jost', sans-serif; font-size: 0.65rem;
-      font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-      padding: 0.75rem 2.5rem; transition: opacity 0.3s;
-    }
-    .lb-order-btn:hover { opacity: 0.85; }
 
     /* ══════════════════════
        ORDER POPUP MODAL
@@ -1094,7 +967,7 @@
 
   <!-- Center: Logo -->
   <a href="#hero" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">
-    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; filter:brightness(1.1);"/>
+    <img src="Logo_White.webp" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; filter:brightness(1.1);" loading="eager" decoding="async"/>
   </a>
 
   <!-- Right: Nav links (desktop) ya Hamburger (mobile) -->
@@ -1121,7 +994,7 @@
     </div>
   </div>
   <div class="hero-right">
-    <img src="hero_lifestyle.jpg" alt="Aurra Home Premium Tray"/>
+    <img src="hero_lifestyle.webp" alt="Aurra Home Premium Tray" loading="eager" fetchpriority="high" decoding="async"/>
   </div>
 </section>
 
@@ -1136,16 +1009,9 @@
   <div class="products-ecom-grid" id="collectionsContainer">
 
     <!-- Product 1: Golden Aura -->
-    <div class="pcard fade-in" data-product="Golden Aura" data-price="8,500" data-tag="Collection 01 — PVD Golden">
-      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura','8,500','Collection 01 — PVD Golden',0)">
-        <img class="pcard-img-main" src="Golden_Aura.webp" alt="Golden Aura" id="pimg-Golden_Aura"/>
-        <span class="pcard-img-zoom-hint">🔍 Tap to zoom</span>
-      </div>
-      <div class="pcard-thumbs" id="pthumbs-Golden_Aura">
-        <img class="pcard-thumb active" src="Golden_Aura.webp"   alt="View 1" onclick="switchThumb(this,'pimg-Golden_Aura','pthumbs-Golden_Aura',0,'Golden Aura','8,500','Collection 01 — PVD Golden')"/>
-        <img class="pcard-thumb"        src="Golden_Aura_2.webp" alt="View 2" onclick="switchThumb(this,'pimg-Golden_Aura','pthumbs-Golden_Aura',1,'Golden Aura','8,500','Collection 01 — PVD Golden')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Golden_Aura_3.webp" alt="View 3" onclick="switchThumb(this,'pimg-Golden_Aura','pthumbs-Golden_Aura',2,'Golden Aura','8,500','Collection 01 — PVD Golden')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Golden_Aura_4.webp" alt="View 4" onclick="switchThumb(this,'pimg-Golden_Aura','pthumbs-Golden_Aura',3,'Golden Aura','8,500','Collection 01 — PVD Golden')" onerror="this.style.display='none'"/>
+    <div class="pcard fade-in">
+      <div class="pcard-img-wrap">
+        <img src="Golden_Aura.webp" loading="lazy" decoding="async" alt="Golden Aura"/>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 01 — PVD Golden</p>
@@ -1166,17 +1032,10 @@
     </div>
 
     <!-- Product 2: Imperial Gold -->
-    <div class="pcard fade-in" data-product="Imperial Gold" data-price="8,000" data-tag="Collection 03 — Dual Tone">
+    <div class="pcard fade-in">
       <div class="pcard-badge">Most Popular</div>
-      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold','8,000','Collection 03 — Dual Tone',0)">
-        <img class="pcard-img-main" src="Imperial_Gold.webp" alt="Imperial Gold" id="pimg-Imperial_Gold"/>
-        <span class="pcard-img-zoom-hint">🔍 Tap to zoom</span>
-      </div>
-      <div class="pcard-thumbs" id="pthumbs-Imperial_Gold">
-        <img class="pcard-thumb active" src="Imperial_Gold.webp"   alt="View 1" onclick="switchThumb(this,'pimg-Imperial_Gold','pthumbs-Imperial_Gold',0,'Imperial Gold','8,000','Collection 03 — Dual Tone')"/>
-        <img class="pcard-thumb"        src="Imperial_Gold_2.webp" alt="View 2" onclick="switchThumb(this,'pimg-Imperial_Gold','pthumbs-Imperial_Gold',1,'Imperial Gold','8,000','Collection 03 — Dual Tone')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Imperial_Gold_3.webp" alt="View 3" onclick="switchThumb(this,'pimg-Imperial_Gold','pthumbs-Imperial_Gold',2,'Imperial Gold','8,000','Collection 03 — Dual Tone')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Imperial_Gold_4.webp" alt="View 4" onclick="switchThumb(this,'pimg-Imperial_Gold','pthumbs-Imperial_Gold',3,'Imperial Gold','8,000','Collection 03 — Dual Tone')" onerror="this.style.display='none'"/>
+      <div class="pcard-img-wrap">
+        <img src="Imperial_Gold.webp" loading="lazy" decoding="async" alt="Imperial Gold"/>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 03 — Dual Tone</p>
@@ -1197,16 +1056,9 @@
     </div>
 
     <!-- Product 3: Pearl Silver -->
-    <div class="pcard fade-in" data-product="Pearl Silver" data-price="7,000" data-tag="Collection 02 — Mirror Silver">
-      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver','7,000','Collection 02 — Mirror Silver',0)">
-        <img class="pcard-img-main" src="Pearl_Silver.webp" alt="Pearl Silver" id="pimg-Pearl_Silver"/>
-        <span class="pcard-img-zoom-hint">🔍 Tap to zoom</span>
-      </div>
-      <div class="pcard-thumbs" id="pthumbs-Pearl_Silver">
-        <img class="pcard-thumb active" src="Pearl_Silver.webp"   alt="View 1" onclick="switchThumb(this,'pimg-Pearl_Silver','pthumbs-Pearl_Silver',0,'Pearl Silver','7,000','Collection 02 — Mirror Silver')"/>
-        <img class="pcard-thumb"        src="Pearl_Silver_2.webp" alt="View 2" onclick="switchThumb(this,'pimg-Pearl_Silver','pthumbs-Pearl_Silver',1,'Pearl Silver','7,000','Collection 02 — Mirror Silver')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Pearl_Silver_3.webp" alt="View 3" onclick="switchThumb(this,'pimg-Pearl_Silver','pthumbs-Pearl_Silver',2,'Pearl Silver','7,000','Collection 02 — Mirror Silver')" onerror="this.style.display='none'"/>
-        <img class="pcard-thumb"        src="Pearl_Silver_4.webp" alt="View 4" onclick="switchThumb(this,'pimg-Pearl_Silver','pthumbs-Pearl_Silver',3,'Pearl Silver','7,000','Collection 02 — Mirror Silver')" onerror="this.style.display='none'"/>
+    <div class="pcard fade-in">
+      <div class="pcard-img-wrap">
+        <img src="Pearl_Silver.webp" loading="lazy" decoding="async" alt="Pearl Silver"/>
       </div>
       <div class="pcard-body">
         <p class="pcard-tag">Collection 02 — Mirror Silver</p>
@@ -1326,7 +1178,7 @@
     </div>
     <p class="about-quote fade-in">"Serving is not merely an action — it is an expression of hospitality and love."</p>
     <p class="about-text fade-in">Aurra Home is dedicated to offering handcrafted, premium stainless steel tray sets designed to bring luxury to every Pakistani home. Our collections are crafted to honor those moments, ensuring that every gathering is framed in absolute beauty. From our workshop to your doorstep — Aurra Home delivers quality you can see, feel, and trust.</p>
-    <img src="Imperial_Gold.webp" alt="Aurra Tray" class="about-img fade-in"/>
+    <img src="Imperial_Gold.webp" loading="lazy" decoding="async" alt="Aurra Tray" class="about-img fade-in"/>
     <a href="#order" class="btn-primary fade-in">Order Your Set Today</a>
   </div>
 </section>
@@ -1414,7 +1266,7 @@
 <!-- ════ FOOTER ════ -->
 <footer>
   <div class="footer-inner">
-    <img src="Logo_White.png" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; margin:0 auto 1.2rem; display:block; opacity:0.85;"/>
+    <img src="Logo_White.webp" loading="lazy" alt="Aurra Kitchenware" style="height:50px; width:auto; object-fit:contain; margin:0 auto 1.2rem; display:block; opacity:0.85;"/>
     <div class="footer-brand">AURRA KITCHENWARE</div>
     <div class="footer-tagline">Shine Every Moment</div>
     <p class="footer-desc">Transform everyday serving into a work of art that lasts for generations. Premium stainless steel tray sets — crafted for Pakistani homes.</p>
@@ -1840,120 +1692,7 @@
       btn.style.background = '';
     }, 5000);
   });
-
-  // ══════════════════════
-  // IMAGE GALLERY SYSTEM
-  // ══════════════════════
-  const PRODUCT_IMAGES = {
-    'Golden Aura':   ['Golden_Aura.webp','Golden_Aura_2.webp','Golden_Aura_3.webp','Golden_Aura_4.webp'],
-    'Imperial Gold': ['Imperial_Gold.webp','Imperial_Gold_2.webp','Imperial_Gold_3.webp','Imperial_Gold_4.webp'],
-    'Pearl Silver':  ['Pearl_Silver.webp','Pearl_Silver_2.webp','Pearl_Silver_3.webp','Pearl_Silver_4.webp']
-  };
-
-  // No pre-checking — load directly, onerror handles missing images
-  function getValidImages(name) {
-    return Promise.resolve(PRODUCT_IMAGES[name] || []);
-  }
-
-  function switchThumb(thumbEl, mainImgId, thumbsContainerId) {
-    const mainImg = document.getElementById(mainImgId);
-    if (mainImg) {
-      mainImg.style.opacity = '0.3';
-      mainImg.src = thumbEl.src;
-      setTimeout(() => mainImg.style.opacity = '1', 180);
-    }
-    const container = document.getElementById(thumbsContainerId);
-    if (container) container.querySelectorAll('.pcard-thumb').forEach(t => t.classList.remove('active'));
-    thumbEl.classList.add('active');
-  }
-
-  // ── Lightbox ──
-  let _lbImages = [], _lbIdx = 0, _lbName = '', _lbPrice = '', _lbTag = '', _lbTouchX = null;
-
-  async function openLightbox(name, price, tag, startIdx) {
-    _lbName = name; _lbPrice = price; _lbTag = tag;
-    const imgs = await getValidImages(name);
-    _lbImages = imgs.length ? imgs : [(PRODUCT_IMAGES[name] || [''])[0]];
-    _lbIdx = startIdx || 0;
-    document.getElementById('lbProductName').textContent  = name;
-    document.getElementById('lbProductPrice').textContent = 'Rs. ' + price + ' / 3 Pcs Set';
-    document.getElementById('lbOrderBtn').onclick = () => {
-      closeLightbox();
-      setTimeout(() => openOrderModal(name, price, _lbImages[0], tag), 200);
-    };
-    renderLightbox();
-    document.getElementById('lightbox').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function renderLightbox() {
-    const img = document.getElementById('lbMainImg');
-    img.style.opacity = '0.4';
-    img.src = _lbImages[_lbIdx];
-    img.onload  = () => { img.style.opacity = '1'; };
-    img.onerror = () => { img.style.opacity = '1'; };
-    document.getElementById('lbCounter').textContent = (_lbIdx + 1) + ' / ' + _lbImages.length;
-    const tb = document.getElementById('lbThumbs');
-    tb.innerHTML = _lbImages.map((src, i) =>
-      '<img class="lb-thumb' + (i === _lbIdx ? ' active' : '') + '" src="' + src + '" ' +
-      'onclick="lbGoTo(' + i + ')" onerror="this.parentElement.removeChild(this)"/>'
-    ).join('');
-    document.querySelectorAll('.lb-arrow').forEach(a => {
-      a.style.display = _lbImages.length > 1 ? 'flex' : 'none';
-    });
-  }
-
-  function lbGoTo(idx) { _lbIdx = (idx + _lbImages.length) % _lbImages.length; renderLightbox(); }
-  function lbSlide(dir) { lbGoTo(_lbIdx + dir); }
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // Keyboard
-  document.addEventListener('keydown', e => {
-    if (!document.getElementById('lightbox').classList.contains('open')) return;
-    if (e.key === 'ArrowRight') lbSlide(1);
-    if (e.key === 'ArrowLeft')  lbSlide(-1);
-    if (e.key === 'Escape')     closeLightbox();
-  });
-
-  // Swipe on mobile
-  document.getElementById('lightbox').addEventListener('touchstart', e => {
-    _lbTouchX = e.touches[0].clientX;
-  }, { passive: true });
-  document.getElementById('lightbox').addEventListener('touchend', e => {
-    if (_lbTouchX === null) return;
-    const diff = _lbTouchX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) lbSlide(diff > 0 ? 1 : -1);
-    _lbTouchX = null;
-  }, { passive: true });
-
-  // Click backdrop
-  document.getElementById('lightbox').addEventListener('click', e => {
-    if (e.target === document.getElementById('lightbox')) closeLightbox();
-  });
-
 </script>
-<!-- ════ LIGHTBOX ════ -->
-<div id="lightbox">
-  <button class="lb-close" onclick="closeLightbox()">✕</button>
-  <div class="lb-inner">
-    <div class="lb-img-wrap">
-      <button class="lb-arrow left"  onclick="lbSlide(-1)">&#8249;</button>
-      <img id="lbMainImg" src="" alt=""/>
-      <button class="lb-arrow right" onclick="lbSlide(1)">&#8250;</button>
-    </div>
-    <div class="lb-thumbs" id="lbThumbs"></div>
-    <div class="lb-info">
-      <div class="lb-product-name" id="lbProductName"></div>
-      <div class="lb-product-price" id="lbProductPrice"></div>
-      <div class="lb-counter" id="lbCounter"></div>
-    </div>
-    <button class="lb-order-btn" id="lbOrderBtn">Order Now — Cash on Delivery</button>
-  </div>
-</div>
-
 <!-- ════ ORDER SLIP MODAL ════ -->
 <div id="slipModal">
   <div class="slip-backdrop"></div>
