@@ -1850,21 +1850,9 @@
     'Pearl Silver':  ['Pearl_Silver.webp','Pearl_Silver_2.webp','Pearl_Silver_3.webp','Pearl_Silver_4.webp']
   };
 
-  const _imgCache = {};
-  function checkImg(src) {
-    if (_imgCache[src] !== undefined) return Promise.resolve(_imgCache[src]);
-    return new Promise(res => {
-      const i = new Image();
-      i.onload  = () => { _imgCache[src] = true;  res(true); };
-      i.onerror = () => { _imgCache[src] = false; res(false); };
-      i.src = src;
-    });
-  }
-
-  async function getValidImages(name) {
-    const imgs = PRODUCT_IMAGES[name] || [];
-    const results = await Promise.all(imgs.map(s => checkImg(s)));
-    return imgs.filter((_, i) => results[i]);
+  // No pre-checking — load directly, onerror handles missing images
+  function getValidImages(name) {
+    return Promise.resolve(PRODUCT_IMAGES[name] || []);
   }
 
   function switchThumb(thumbEl, mainImgId, thumbsContainerId) {
@@ -1900,13 +1888,15 @@
 
   function renderLightbox() {
     const img = document.getElementById('lbMainImg');
-    img.style.opacity = '0';
+    img.style.opacity = '0.4';
     img.src = _lbImages[_lbIdx];
-    img.onload = () => img.style.opacity = '1';
+    img.onload  = () => { img.style.opacity = '1'; };
+    img.onerror = () => { img.style.opacity = '1'; };
     document.getElementById('lbCounter').textContent = (_lbIdx + 1) + ' / ' + _lbImages.length;
     const tb = document.getElementById('lbThumbs');
     tb.innerHTML = _lbImages.map((src, i) =>
-      '<img class="lb-thumb' + (i === _lbIdx ? ' active' : '') + '" src="' + src + '" onclick="lbGoTo(' + i + ')"/>'
+      '<img class="lb-thumb' + (i === _lbIdx ? ' active' : '') + '" src="' + src + '" ' +
+      'onclick="lbGoTo(' + i + ')" onerror="this.parentElement.removeChild(this)"/>'
     ).join('');
     document.querySelectorAll('.lb-arrow').forEach(a => {
       a.style.display = _lbImages.length > 1 ? 'flex' : 'none';
