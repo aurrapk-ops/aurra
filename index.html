@@ -1247,7 +1247,7 @@
 
     <!-- Product 1: Golden Aura -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(this), {tag:'Collection 01 — PVD Golden', price:'8500', unit:'3 Pcs', description:'Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.', features:['Pure PVD Golden Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
+      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(event.currentTarget), {tag:'Collection 01 — PVD Golden', price:'8500', unit:'3 Pcs', description:'Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.', features:['Pure PVD Golden Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-golden">
           <div class="pcard-carousel-slides" id="slides-golden">
             <img src="Golden_Aura.webp" alt="Golden Aura 1" loading="eager" fetchpriority="high"/>
@@ -1289,7 +1289,7 @@
     <!-- Product 2: Imperial Gold -->
     <div class="pcard fade-in">
       <div class="pcard-badge">Most Popular</div>
-      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(this), {tag:'Collection 03 — Dual Tone', price:'8000', unit:'3 Pcs', description:'Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.', features:['Golden Tray Body with Silver Handles','Laser Engraved Floral Center Design','Mirror Polish Finish','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
+      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(event.currentTarget), {tag:'Collection 03 — Dual Tone', price:'8000', unit:'3 Pcs', description:'Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.', features:['Golden Tray Body with Silver Handles','Laser Engraved Floral Center Design','Mirror Polish Finish','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-imperial">
           <div class="pcard-carousel-slides" id="slides-imperial">
             <img src="Imperial_Gold.webp" alt="Imperial Gold 1" loading="eager"/>
@@ -1330,7 +1330,7 @@
 
     <!-- Product 3: Pearl Silver -->
     <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(this), {tag:'Collection 02 — Mirror Silver', price:'7000', unit:'3 Pcs', description:'Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.', features:['Pure Silver Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
+      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(event.currentTarget), {tag:'Collection 02 — Mirror Silver', price:'7000', unit:'3 Pcs', description:'Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.', features:['Pure Silver Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
         <div class="pcard-carousel" id="carousel-pearl">
           <div class="pcard-carousel-slides" id="slides-pearl">
             <img src="Pearl_Silver.webp" alt="Pearl Silver 1" loading="eager"/>
@@ -1391,7 +1391,7 @@
       <div class="form-row-2">
         <div class="form-group">
           <label class="om-body form-label">Full Name</label>
-          <input type="text" id="om_name" class="form-control" placeholder="Aapka naam"/>
+          <input type="text" id="om_name" class="form-control" placeholder="Your Full Name"/>
         </div>
         <div class="form-group">
           <label class="om-body form-label">Phone Number</label>
@@ -1644,8 +1644,8 @@
   }
 
   function currentSlide(wrapEl) {
-    // Find which carousel is inside this wrap and return current index
-    const carousel = wrapEl.querySelector('.pcard-carousel');
+    if (!wrapEl) return 0;
+    const carousel = wrapEl.querySelector && wrapEl.querySelector('.pcard-carousel');
     if (!carousel) return 0;
     const id = carousel.id.replace('carousel-', '');
     return cardState[id] || 0;
