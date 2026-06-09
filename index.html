@@ -1751,6 +1751,28 @@
     }, {passive:true});
   });
 
+  // ── Event delegation for dynamic product lightbox ──
+  document.addEventListener('click', function(e) {
+    const trigger = e.target.closest('.lb-trigger');
+    if (!trigger) return;
+    // Don't open if arrow or dot was clicked
+    if (e.target.closest('.pcard-arrow, .pcard-dot')) return;
+
+    const name     = trigger.dataset.name;
+    const imgs     = JSON.parse(trigger.dataset.imgs.replace(/&quot;/g, '"'));
+    const cid      = trigger.dataset.cid;
+    const features = JSON.parse(trigger.dataset.features.replace(/&quot;/g, '"'));
+    const details  = {
+      tag:         trigger.dataset.tag,
+      price:       trigger.dataset.price,
+      unit:        trigger.dataset.unit,
+      description: trigger.dataset.desc,
+      features:    features
+    };
+    const startIdx = cardState[cid] || 0;
+    openLightbox(name, imgs, startIdx, details);
+  });
+
   // ── Phone Validation ──
   function validatePhone(input) {
     const val   = input.value.replace(/[-\s]/g, '');
@@ -1973,7 +1995,7 @@
   let siteProducts = [];
 
   function loadSiteProducts() {
-    jsonpGet({action: 'getProducts', includeHidden: 'false'})
+    jsonpGet({action: 'getProducts', includeHidden: 'false', _t: Date.now()})
       .then(res => {
         if (res.success && res.products && res.products.length > 0) {
           siteProducts = res.products;
@@ -2024,7 +2046,15 @@
       html += `
         <div class="pcard fade-in">
           ${isMostPopular ? '<div class="pcard-badge">Most Popular</div>' : ''}
-          <div class="pcard-img-wrap" onclick="openLightbox('${p.name}', ${imgsJson}, cardState['${cid}']||0, {tag:'${(p.tag||'').replace(/'/g,"\\'")}', price:'${p.price}', unit:'${p.unit||'set'}', description:'${(p.description||'').replace(/'/g,"\\'").substring(0,200)}', features:${JSON.stringify((p.features||[]).slice(0,5))}})">
+          <div class="pcard-img-wrap lb-trigger"
+            data-name="${p.name.replace(/"/g,'&quot;')}"
+            data-imgs="${imgsJson.replace(/"/g,'&quot;')}"
+            data-cid="${cid}"
+            data-tag="${(p.tag||'').replace(/"/g,'&quot;')}"
+            data-price="${p.price}"
+            data-unit="${p.unit||'set'}"
+            data-desc="${(p.description||'').replace(/"/g,'&quot;').substring(0,200)}"
+            data-features="${JSON.stringify((p.features||[]).slice(0,5)).replace(/"/g,'&quot;')}">
             <div class="pcard-carousel" id="carousel-${cid}">
               <div class="pcard-carousel-slides" id="slides-${cid}">${slidesHtml}</div>
               <button class="pcard-arrow prev" onclick="event.stopPropagation();cardSlide('${cid}',-1)">&#8592;</button>
