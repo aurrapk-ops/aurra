@@ -197,6 +197,16 @@
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(to right, var(--dark) 0%, transparent 30%);
     }
+
+    /* ── Mobile Hero Image ── */
+    .mobile-hero-img {
+      display: none;
+      width: 100%;
+      height: 65vw;
+      object-fit: cover;
+      object-position: center;
+    }
+
     @media (max-width: 1024px) {
       #hero { grid-template-columns: 1fr; min-height: auto; }
       .hero-left { padding: 7rem 2rem 3rem; order: 2; }
@@ -205,8 +215,13 @@
       .hero-title { font-size: 2.8rem; }
       .hero-script { font-size: 2.2rem; }
     }
+    @media (max-width: 768px) {
+      .mobile-hero-img { display: block; }
+      .hero-right { display: none !important; }
+      .hero-left { padding: 2rem 1.5rem 2.5rem; order: 2; }
+    }
     @media (max-width: 480px) {
-      .hero-left { padding: 6rem 1.5rem 2.5rem; }
+      .hero-left { padding: 1.5rem 1.5rem 2rem; }
       .hero-title { font-size: 2.2rem; }
       .hero-sub { font-size: 0.8rem; }
       .hero-btns { flex-direction: column; }
@@ -1221,6 +1236,8 @@
 </nav>
 
 <!-- ════ HERO ════ -->
+<!-- Mobile Hero Image (sirf mobile pe dikhegi) -->
+<img src="hero_mobile.webp" alt="Aurra Kitchenware" class="mobile-hero-img" loading="eager" fetchpriority="high"/>
 <section id="hero">
   <div class="hero-left">
     <div class="hero-script">AURRA KITCHENWARE</div>
