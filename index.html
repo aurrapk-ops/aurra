@@ -230,6 +230,7 @@
       font-weight: 300;
     }
     .sec-desc.light { color: rgba(255,255,255,0.6); }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .gold-line {
       width: 60px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
@@ -1244,131 +1245,11 @@
     <p class="sec-desc">Discover our range of meticulously crafted serving pieces. Whether adorned in brilliant gold or polished stainless steel, each collection is designed to transform everyday serving into a work of art.</p>
   </div>
   <div class="products-ecom-grid" id="collectionsContainer">
-
-    <!-- Product 1: Golden Aura -->
-    <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Golden Aura', goldenAuraImgs, currentSlide(event.currentTarget), {tag:'Collection 01 — PVD Golden', price:'8500', unit:'3 Pcs', description:'Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.', features:['Pure PVD Golden Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
-        <div class="pcard-carousel" id="carousel-golden">
-          <div class="pcard-carousel-slides" id="slides-golden">
-            <img src="Golden_Aura.webp" alt="Golden Aura 1" loading="eager" fetchpriority="high"/>
-            <img src="Golden_Aura_2.webp" alt="Golden Aura 2" loading="lazy" decoding="async"/>
-            <img src="Golden_Aura_3.webp" alt="Golden Aura 3" loading="lazy" decoding="async"/>
-            <img src="Golden_Aura_4.webp" alt="Golden Aura 4" loading="lazy" decoding="async"/>
-            <img src="Golden_Aura_5.webp" alt="Golden Aura 5" loading="lazy" decoding="async"/>
-          </div>
-          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('golden',-1)">&#8592;</button>
-          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('golden',1)">&#8594;</button>
-          <div class="pcard-dots" id="dots-golden">
-            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('golden',0)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',1)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',2)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',3)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('golden',4)"></button>
-          </div>
-        </div>
-        <div class="pcard-expand-icon" title="View Full">⤢</div>
-      </div>
-      <div class="pcard-body">
-        <p class="pcard-tag">Collection 01 — PVD Golden</p>
-        <h3 class="pcard-name">Golden Aura</h3>
-        <p class="pcard-desc">Regal heritage on your table. Intricate floral engravings on a mirror-polish finish that reflects warm light beautifully.</p>
-        <ul class="pcard-features">
-          <li>Pure PVD Golden Mirror Polish Finish</li>
-          <li>Laser Engraved Floral Center Design</li>
-          <li>Double Cylindrical Bar Handles</li>
-          <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe</li>
-        </ul>
-      </div>
-      <div class="pcard-footer">
-        <div class="pcard-price">Rs. 8,500 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Golden Aura','8,500','Golden_Aura.webp','Collection 01 — PVD Golden')">Order Now</button>
-      </div>
+    <!-- Products load honge Google Sheets se -->
+    <div id="productsLoader" style="grid-column:1/-1; text-align:center; padding:4rem 2rem;">
+      <div style="display:inline-block; width:40px; height:40px; border:2px solid rgba(201,168,76,0.2); border-top-color:var(--gold2); border-radius:50%; animation:spin 0.8s linear infinite;"></div>
+      <p style="color:rgba(255,255,255,0.4); font-size:0.75rem; letter-spacing:0.2em; margin-top:1rem;">LOADING COLLECTIONS...</p>
     </div>
-
-    <!-- Product 2: Imperial Gold -->
-    <div class="pcard fade-in">
-      <div class="pcard-badge">Most Popular</div>
-      <div class="pcard-img-wrap" onclick="openLightbox('Imperial Gold', imperialGoldImgs, currentSlide(event.currentTarget), {tag:'Collection 03 — Dual Tone', price:'8000', unit:'3 Pcs', description:'Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.', features:['Golden Tray Body with Silver Handles','Laser Engraved Floral Center Design','Mirror Polish Finish','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
-        <div class="pcard-carousel" id="carousel-imperial">
-          <div class="pcard-carousel-slides" id="slides-imperial">
-            <img src="Imperial_Gold.webp" alt="Imperial Gold 1" loading="eager"/>
-            <img src="Imperial_Gold_2.webp" alt="Imperial Gold 2" loading="lazy" decoding="async"/>
-            <img src="Imperial_Gold_3.webp" alt="Imperial Gold 3" loading="lazy" decoding="async"/>
-            <img src="Imperial_Gold_4.webp" alt="Imperial Gold 4" loading="lazy" decoding="async"/>
-            <img src="Imperial_Gold_5.webp" alt="Imperial Gold 5" loading="lazy" decoding="async"/>
-          </div>
-          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('imperial',-1)">&#8592;</button>
-          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('imperial',1)">&#8594;</button>
-          <div class="pcard-dots" id="dots-imperial">
-            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('imperial',0)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',1)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',2)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',3)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('imperial',4)"></button>
-          </div>
-        </div>
-        <div class="pcard-expand-icon" title="View Full">⤢</div>
-      </div>
-      <div class="pcard-body">
-        <p class="pcard-tag">Collection 03 — Dual Tone</p>
-        <h3 class="pcard-name">Imperial Gold</h3>
-        <p class="pcard-desc">Perfect fusion of warmth and refinement. Golden tray body with sleek silver handles — striking dual-tone contrast.</p>
-        <ul class="pcard-features">
-          <li>Golden Tray Body with Silver Handles</li>
-          <li>Laser Engraved Floral Center Design</li>
-          <li>Mirror Polish Finish</li>
-          <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe</li>
-        </ul>
-      </div>
-      <div class="pcard-footer">
-        <div class="pcard-price">Rs. 8,000 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Imperial Gold','8,000','Imperial_Gold.webp','Collection 03 — Dual Tone')">Order Now</button>
-      </div>
-    </div>
-
-    <!-- Product 3: Pearl Silver -->
-    <div class="pcard fade-in">
-      <div class="pcard-img-wrap" onclick="openLightbox('Pearl Silver', pearlSilverImgs, currentSlide(event.currentTarget), {tag:'Collection 02 — Mirror Silver', price:'7000', unit:'3 Pcs', description:'Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.', features:['Pure Silver Mirror Polish Finish','Laser Engraved Floral Center Design','Double Cylindrical Bar Handles','3 Pcs Set — Small, Medium & Large','100% Rust Free • Food Safe']})">
-        <div class="pcard-carousel" id="carousel-pearl">
-          <div class="pcard-carousel-slides" id="slides-pearl">
-            <img src="Pearl_Silver.webp" alt="Pearl Silver 1" loading="eager"/>
-            <img src="Pearl_Silver_2.webp" alt="Pearl Silver 2" loading="lazy" decoding="async"/>
-            <img src="Pearl_Silver_3.webp" alt="Pearl Silver 3" loading="lazy" decoding="async"/>
-            <img src="Pearl_Silver_4.webp" alt="Pearl Silver 4" loading="lazy" decoding="async"/>
-            <img src="Pearl_Silver_5.webp" alt="Pearl Silver 5" loading="lazy" decoding="async"/>
-          </div>
-          <button class="pcard-arrow prev" onclick="event.stopPropagation(); cardSlide('pearl',-1)">&#8592;</button>
-          <button class="pcard-arrow next" onclick="event.stopPropagation(); cardSlide('pearl',1)">&#8594;</button>
-          <div class="pcard-dots" id="dots-pearl">
-            <button class="pcard-dot active" onclick="event.stopPropagation(); cardGoTo('pearl',0)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',1)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',2)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',3)"></button>
-            <button class="pcard-dot" onclick="event.stopPropagation(); cardGoTo('pearl',4)"></button>
-          </div>
-        </div>
-        <div class="pcard-expand-icon" title="View Full">⤢</div>
-      </div>
-      <div class="pcard-body">
-        <p class="pcard-tag">Collection 02 — Mirror Silver</p>
-        <h3 class="pcard-name">Pearl Silver</h3>
-        <p class="pcard-desc">Cool, luminous, timelessly elegant. Flawless mirror polish and delicate floral engravings for any occasion.</p>
-        <ul class="pcard-features">
-          <li>Pure Silver Mirror Polish Finish</li>
-          <li>Laser Engraved Floral Center Design</li>
-          <li>Double Cylindrical Bar Handles</li>
-          <li>3 Pcs Set — Small, Medium & Large</li>
-          <li>100% Rust Free • Food Safe</li>
-        </ul>
-      </div>
-      <div class="pcard-footer">
-        <div class="pcard-price">Rs. 7,000 <small>/ 3 Pcs</small></div>
-        <button class="pcard-btn" onclick="openOrderModal('Pearl Silver','7,000','Pearl_Silver.webp','Collection 02 — Mirror Silver')">Order Now</button>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -1621,9 +1502,7 @@
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhks9B1vWeg1hcaxyPXH1BFszflzpQQ0WTIh3FzjmyaayLTLOfe7kedqKzarHYgtNQ/exec';
 
   // ── Product Images Data ──
-  const goldenAuraImgs   = ['Golden_Aura.webp','Golden_Aura_2.webp','Golden_Aura_3.webp','Golden_Aura_4.webp','Golden_Aura_5.webp'];
-  const imperialGoldImgs = ['Imperial_Gold.webp','Imperial_Gold_2.webp','Imperial_Gold_3.webp','Imperial_Gold_4.webp','Imperial_Gold_5.webp'];
-  const pearlSilverImgs  = ['Pearl_Silver.webp','Pearl_Silver_2.webp','Pearl_Silver_3.webp','Pearl_Silver_4.webp','Pearl_Silver_5.webp'];
+  // ── Product Images — loaded from Google Sheets ──
 
   // ── Card Carousel State ──
   const cardState = { golden: 0, imperial: 0, pearl: 0 };
@@ -1973,7 +1852,10 @@
   function jsonpGet(params) {
     return new Promise((resolve, reject) => {
       const cbName = '__aurra_' + (++_cbCount);
+      // Strong cache busting: timestamp + random number
       params.callback = cbName;
+      params._t = Date.now();
+      params._r = Math.random().toString(36).slice(2);
       const qs = Object.entries(params)
         .map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
       window[cbName] = function(data) {
@@ -1984,6 +1866,8 @@
       };
       const script = document.createElement('script');
       script.id  = 'jscb-' + cbName;
+      // Set cache control attributes
+      script.setAttribute('cache', 'no-store');
       script.src = SCRIPT_URL + '?' + qs;
       script.onerror = () => reject(new Error('Load failed'));
       document.body.appendChild(script);
@@ -1995,18 +1879,26 @@
   let siteProducts = [];
 
   function loadSiteProducts() {
-    jsonpGet({action: 'getProducts', includeHidden: 'false', _t: Date.now()})
+    jsonpGet({action: 'getProducts', includeHidden: 'false', _t: Date.now(), _r: Math.random().toString(36).slice(2)})
       .then(res => {
         if (res.success && res.products && res.products.length > 0) {
           siteProducts = res.products;
           renderCollections(res.products);
           renderVariants(res.products);
+        } else {
+          showLoadError();
         }
-        // Agar fail ho toh fallback HTML waise hi rahega
       })
       .catch(() => {
-        // Silently fail — fallback HTML already visible hai
+        showLoadError();
       });
+  }
+
+  function showLoadError() {
+    const loader = document.getElementById('productsLoader');
+    if (loader) {
+      loader.innerHTML = '<p style="color:rgba(255,255,255,0.4); font-size:0.8rem; letter-spacing:0.1em; text-align:center; padding:2rem;">Collections load nahi ho saki — please refresh karein.</p>';
+    }
   }
 
   function renderCollections(products) {
@@ -2078,6 +1970,9 @@
     });
 
     container.innerHTML = html;
+    // Loader hide karo
+    const loader = document.getElementById('productsLoader');
+    if (loader) loader.remove();
 
     // Register new carousel IDs in cardState + touch support
     products.forEach((p, i) => {
