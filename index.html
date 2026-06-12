@@ -4,25 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aurra Home — Shine Every Moment</title>
-
-  <!-- Meta Pixel Base Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '26787050074310657');
-  fbq('track', 'PageView');
-  </script>
-  <noscript>
-    <img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=26787050074310657&ev=PageView&noscript=1"/>
-  </noscript>
-  <!-- End Meta Pixel Base Code -->
   <meta name="description" content="Aurra Home — Premium stainless steel tray sets. PVD golden coating, mirror silver polish, laser engraved. COD all over Pakistan."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -31,6 +12,20 @@
   <link rel="preload" as="image" href="Imperial_Gold.webp"/>
   <link rel="preload" as="image" href="Pearl_Silver.webp"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Meta Pixel -->
+  <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '26787050074310657');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=26787050074310657&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel -->
   <style>
     :root {
       --dark:    #2a2825;
@@ -1875,6 +1870,21 @@
       new Image().src = SCRIPT_URL + '?' + paramStr;
     } catch(err) { console.warn(err); }
 
+    // ── Meta Pixel Purchase Event ──
+    try {
+      const priceMatch = variant.match(/([\d,]+)$/);
+      const unitPrice = priceMatch ? parseInt(priceMatch[1].replace(/,/g,'')) : 0;
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Purchase', {
+          value: unitPrice * parseInt(qty),
+          currency: 'PKR',
+          content_name: variant,
+          content_type: 'product',
+          num_items: parseInt(qty)
+        });
+      }
+    } catch(e) {}
+
     // ── Show Order Slip ──
     const whatsappMsg = 'Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ' + variant + '\n🔢 Qty: ' + qty + '\n👤 ' + name + '\n📞 ' + phone + '\n📍 ' + address + (notes ? '\n📝 ' + notes : '') + '\n\nCOD — Please confirm. Shukriya! ✨';
 
@@ -1915,16 +1925,6 @@
     // Show slip
     document.getElementById('slipModal').classList.add('open');
     document.body.style.overflow = 'hidden';
-
-    // Meta Pixel Purchase Event
-    try {
-      fbq('track', 'Purchase', {
-        value: total,
-        currency: 'PKR',
-        content_name: variant.split(' — ')[0],
-        content_type: 'product'
-      });
-    } catch(e) { console.warn('Pixel error:', e); }
   }
 
   function closeSlipModal() {
@@ -2220,6 +2220,18 @@
     success.style.display = 'block';
     btn.textContent = '✓ Order Placed!';
     btn.style.background = '#27ae60';
+
+    // ── Meta Pixel Purchase Event ──
+    try {
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Purchase', {
+          value: 0,
+          currency: 'PKR',
+          content_name: variant || 'Order',
+          content_type: 'product'
+        });
+      }
+    } catch(e) {}
 
     setTimeout(() => window.open(`https://wa.me/923334809118?text=${encodeURIComponent(msg)}`, '_blank'), 1200);
     setTimeout(() => {
