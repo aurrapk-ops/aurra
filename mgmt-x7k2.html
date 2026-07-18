@@ -334,12 +334,43 @@
     }
     .empty-state p { font-size: 0.82rem; letter-spacing: 0.05em; }
 
+    /* ── COUPONS ── */
+    .coupons-table { width: 100%; border-collapse: collapse; }
+    .coupons-table th {
+      text-align: left; padding: 0.75rem 1rem;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+    .coupons-table td {
+      padding: 1rem; border-bottom: 1px solid rgba(201,168,76,0.07);
+      font-size: 0.82rem; vertical-align: middle;
+    }
+    .coupons-table tr:last-child td { border-bottom: none; }
+    .coupons-table tr:hover td { background: rgba(201,168,76,0.03); }
+    .coupon-code {
+      font-family: monospace; font-size: 0.95rem;
+      color: var(--gold2); font-weight: 700; letter-spacing: 0.1em;
+    }
+    .coupon-badge {
+      display: inline-block; padding: 0.2rem 0.6rem;
+      font-size: 0.6rem; letter-spacing: 0.1em; font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-percent { background: rgba(46,204,113,0.15); color: var(--green); }
+    .badge-fixed   { background: rgba(201,168,76,0.15); color: var(--gold2); }
+    .badge-active  { background: rgba(46,204,113,0.15); color: var(--green); }
+    .badge-inactive{ background: rgba(231,76,60,0.15);  color: var(--red);   }
+    .coupon-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .coupon-stats { font-size: 0.72rem; color: var(--muted); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       .main-content { padding: 1rem; }
       .form-row { grid-template-columns: 1fr; }
       .products-grid { grid-template-columns: 1fr; }
       header { padding: 1rem; }
+      .coupons-table { display: block; overflow-x: auto; }
     }
   </style>
 </head>
@@ -371,6 +402,7 @@
   <div class="main-content">
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('products')">Products</button>
+      <button class="tab-btn" onclick="switchTab('coupons')">🏷️ Coupons</button>
     </div>
 
     <!-- PRODUCTS TAB -->
@@ -385,6 +417,87 @@
           Loading products...
         </div>
       </div>
+    </div>
+    <!-- COUPONS TAB -->
+    <div class="tab-content" id="tab-coupons">
+      <div class="sec-header">
+        <div class="sec-title">Coupon Codes</div>
+        <button class="btn btn-gold" onclick="openCouponModal()">+ Naya Coupon</button>
+      </div>
+      <div id="couponsList">
+        <div class="loading"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COUPON MODAL -->
+<div class="modal-overlay" id="couponModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="couponModalTitle">Naya Coupon</div>
+      <button class="modal-close" onclick="closeCouponModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="couponEditCode"/>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Coupon Code</label>
+        <input type="text" class="form-control" id="couponCode"
+               placeholder="AURRA10" style="text-transform:uppercase; font-family:monospace; letter-spacing:0.1em;"/>
+        <div style="font-size:0.62rem; color:var(--muted); margin-top:0.4rem;">Capital letters mein likhein</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Discount Type</label>
+        <select class="form-control" id="couponType" onchange="updateCouponLabel()">
+          <option value="percent">Percentage (%) — Maslan 10%</option>
+          <option value="fixed">Fixed Amount (Rs.) — Maslan Rs. 500</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" id="couponValueLabel">Discount Value (%)</label>
+        <input type="number" class="form-control" id="couponValue" placeholder="10" min="1"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Minimum Order (Rs.) — 0 = koi limit nahi</label>
+        <input type="number" class="form-control" id="couponMinOrder" placeholder="0" min="0" value="0"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Max Uses — 0 = unlimited</label>
+        <input type="number" class="form-control" id="couponMaxUses" placeholder="0" min="0" value="0"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Expiry Date — khali chhoro = kabhi expire na ho</label>
+        <input type="date" class="form-control" id="couponExpiry"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description (optional)</label>
+      <input type="text" class="form-control" id="couponDesc" placeholder="Eid special discount"/>
+    </div>
+
+    <div class="form-group">
+      <div class="toggle-group">
+        <span class="toggle-label">Coupon Active hai</span>
+        <label class="toggle">
+          <input type="checkbox" id="couponActive" checked/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeCouponModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveCoupon()">Coupon Save Karo</button>
     </div>
   </div>
 </div>
@@ -486,7 +599,196 @@
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelector('[onclick="switchTab(\'' + name + '\')"]').classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'coupons') loadCoupons();
   }
+
+  // ══════════════════════════════════════
+  //  COUPON SYSTEM
+  // ══════════════════════════════════════
+
+  let allCoupons = [];
+
+  async function loadCoupons() {
+    document.getElementById('couponsList').innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+    try {
+      const res = await jsonpGet({ action: 'getCoupons' });
+      if (res.success) {
+        allCoupons = res.coupons || [];
+        renderCoupons();
+      } else {
+        showToast('Load failed: ' + res.error, 'error');
+      }
+    } catch(err) {
+      document.getElementById('couponsList').innerHTML = '<div class="empty-state"><p>Load nahi ho saka.</p></div>';
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  function renderCoupons() {
+    const container = document.getElementById('couponsList');
+    if (!allCoupons.length) {
+      container.innerHTML = '<div class="empty-state"><p>Koi coupon nahi — "Naya Coupon" se banao.</p></div>';
+      return;
+    }
+    container.innerHTML = `
+      <table class="coupons-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Discount</th>
+            <th>Min Order</th>
+            <th>Expiry</th>
+            <th>Uses</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${allCoupons.map(c => `
+            <tr>
+              <td>
+                <div class="coupon-code">${c.code}</div>
+                <div class="coupon-stats">${c.description || ''}</div>
+              </td>
+              <td>
+                <span class="coupon-badge ${c.type === 'percent' ? 'badge-percent' : 'badge-fixed'}">
+                  ${c.type === 'percent' ? c.value + '%' : 'Rs. ' + parseInt(c.value).toLocaleString()} OFF
+                </span>
+              </td>
+              <td>${c.minOrder > 0 ? 'Rs. ' + parseInt(c.minOrder).toLocaleString() : '—'}</td>
+              <td>${c.expiry || 'No Expiry'}</td>
+              <td>
+                ${c.uses}${c.maxUses > 0 ? ' / ' + c.maxUses : ' / ∞'}
+              </td>
+              <td>
+                <span class="coupon-badge ${c.active ? 'badge-active' : 'badge-inactive'}">
+                  ${c.active ? 'Active' : 'Inactive'}
+                </span>
+              </td>
+              <td>
+                <div class="coupon-actions">
+                  <button class="btn btn-outline btn-sm" onclick="openEditCoupon('${c.code}')">✎ Edit</button>
+                  <button class="btn btn-outline btn-sm" onclick="doToggleCoupon('${c.code}', ${c.active})">
+                    ${c.active ? '⏸ Deactivate' : '▶ Activate'}
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="doDeleteCoupon('${c.code}')">✕ Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function updateCouponLabel() {
+    const type = document.getElementById('couponType').value;
+    document.getElementById('couponValueLabel').textContent =
+      type === 'percent' ? 'Discount Value (%)' : 'Discount Amount (Rs.)';
+  }
+
+  function openCouponModal() {
+    document.getElementById('couponModalTitle').textContent = 'Naya Coupon';
+    document.getElementById('couponEditCode').value  = '';
+    document.getElementById('couponCode').value      = '';
+    document.getElementById('couponCode').disabled   = false;
+    document.getElementById('couponType').value      = 'percent';
+    document.getElementById('couponValue').value     = '';
+    document.getElementById('couponMinOrder').value  = '0';
+    document.getElementById('couponMaxUses').value   = '0';
+    document.getElementById('couponExpiry').value    = '';
+    document.getElementById('couponDesc').value      = '';
+    document.getElementById('couponActive').checked  = true;
+    updateCouponLabel();
+    document.getElementById('couponModal').classList.add('open');
+  }
+
+  function openEditCoupon(code) {
+    const c = allCoupons.find(x => x.code === code);
+    if (!c) return;
+    document.getElementById('couponModalTitle').textContent = 'Coupon Edit: ' + code;
+    document.getElementById('couponEditCode').value  = c.code;
+    document.getElementById('couponCode').value      = c.code;
+    document.getElementById('couponCode').disabled   = true;
+    document.getElementById('couponType').value      = c.type;
+    document.getElementById('couponValue').value     = c.value;
+    document.getElementById('couponMinOrder').value  = c.minOrder;
+    document.getElementById('couponMaxUses').value   = c.maxUses;
+    document.getElementById('couponExpiry').value    = c.expiry || '';
+    document.getElementById('couponDesc').value      = c.description || '';
+    document.getElementById('couponActive').checked  = c.active;
+    updateCouponLabel();
+    document.getElementById('couponModal').classList.add('open');
+  }
+
+  function closeCouponModal() {
+    document.getElementById('couponModal').classList.remove('open');
+    document.getElementById('couponCode').disabled = false;
+  }
+
+  async function saveCoupon() {
+    const code     = document.getElementById('couponCode').value.trim().toUpperCase();
+    const type     = document.getElementById('couponType').value;
+    const value    = parseFloat(document.getElementById('couponValue').value);
+    const minOrder = parseFloat(document.getElementById('couponMinOrder').value) || 0;
+    const maxUses  = parseInt(document.getElementById('couponMaxUses').value)    || 0;
+    const expiry   = document.getElementById('couponExpiry').value;
+    const desc     = document.getElementById('couponDesc').value.trim();
+    const active   = document.getElementById('couponActive').checked;
+
+    if (!code) { showToast('Coupon code daalna zaroori hai', 'error'); return; }
+    if (!value || value <= 0) { showToast('Discount value sahi daalo', 'error'); return; }
+    if (type === 'percent' && value > 100) { showToast('Percentage 100 se zyada nahi ho sakti', 'error'); return; }
+
+    const coupon = { code, type, value, minOrder, maxUses, expiry, description: desc, active };
+
+    try {
+      const res = await postData({ action: 'saveCoupon', coupon });
+      if (res.success) {
+        showToast(res.action === 'created' ? '✅ Coupon bana diya!' : '✅ Coupon update ho gaya!');
+        closeCouponModal();
+        loadCoupons();
+      } else {
+        showToast('Save failed: ' + res.error, 'error');
+      }
+    } catch(err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  async function doToggleCoupon(code, currentActive) {
+    try {
+      const res = await postData({ action: 'toggleCoupon', code });
+      if (res.success) {
+        showToast(code + (res.active ? ' active ho gaya' : ' deactivate ho gaya'));
+        loadCoupons();
+      } else {
+        showToast('Error: ' + res.error, 'error');
+      }
+    } catch(err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  async function doDeleteCoupon(code) {
+    if (!confirm(code + ' coupon delete karna chahte ho?')) return;
+    try {
+      const res = await postData({ action: 'deleteCoupon', code });
+      if (res.success) {
+        showToast(code + ' delete ho gaya');
+        loadCoupons();
+      } else {
+        showToast('Error: ' + res.error, 'error');
+      }
+    } catch(err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  // Close coupon modal on backdrop click
+  document.getElementById('couponModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCouponModal();
+  });
 
   // ── Toast ──
   function showToast(msg, type = 'success') {
