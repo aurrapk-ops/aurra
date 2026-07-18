@@ -927,6 +927,51 @@
     }
     #orderSuccess p { color: #4ade80; font-size: 0.85rem; }
 
+    /* ── Coupon Field ── */
+    .coupon-row {
+      display: flex; gap: 0.8rem; align-items: flex-end;
+      margin-bottom: 2rem;
+    }
+    .coupon-row .form-group { flex: 1; margin-bottom: 0; }
+    .coupon-apply-btn {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.5);
+      color: var(--gold2); font-family: 'Jost', sans-serif;
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.7rem 1.2rem;
+      cursor: pointer; transition: all 0.3s; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .coupon-apply-btn:hover { background: rgba(201,168,76,0.1); border-color: var(--gold2); }
+    .coupon-apply-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .coupon-msg {
+      font-size: 0.75rem; margin-top: 0.5rem;
+      display: none; padding: 0.5rem 0;
+    }
+    .coupon-msg.success { color: #4ade80; display: block; }
+    .coupon-msg.error   { color: #f87171; display: block; }
+    .coupon-summary {
+      display: none; margin-bottom: 1.5rem;
+      background: rgba(46,204,113,0.06);
+      border: 1px solid rgba(46,204,113,0.25);
+      padding: 1rem 1.2rem;
+    }
+    .coupon-summary.visible { display: block; }
+    .coupon-summary-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; margin-bottom: 0.3rem;
+    }
+    .coupon-summary-row span:first-child { color: rgba(255,255,255,0.5); }
+    .coupon-summary-row span:last-child  { color: var(--gold2); }
+    .coupon-summary-total {
+      display: flex; justify-content: space-between;
+      font-size: 0.92rem; font-weight: 600;
+      border-top: 1px solid rgba(46,204,113,0.2);
+      padding-top: 0.6rem; margin-top: 0.4rem;
+    }
+    .coupon-summary-total span:first-child { color: rgba(255,255,255,0.7); }
+    .coupon-summary-total span:last-child  { color: #4ade80; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+
     /* ══════════════════════
        FOOTER
     ══════════════════════ */
@@ -1498,6 +1543,37 @@
             <input type="text" id="fnotes" class="form-control" placeholder="Gift wrap, etc."/>
           </div>
         </div>
+        <!-- Coupon Code -->
+        <div class="coupon-row">
+          <div class="form-group">
+            <label class="form-label">Coupon Code (Optional)</label>
+            <input type="text" id="fcoupon" class="form-control"
+                   placeholder="AURRA10"
+                   style="text-transform:uppercase; letter-spacing:0.08em;"
+                   oninput="this.value=this.value.toUpperCase(); resetCoupon();"/>
+          </div>
+          <button type="button" class="coupon-apply-btn" id="couponApplyBtn" onclick="applyCoupon()">
+            Apply
+          </button>
+        </div>
+        <div class="coupon-msg" id="couponMsg"></div>
+
+        <!-- Discount Summary -->
+        <div class="coupon-summary" id="couponSummary">
+          <div class="coupon-summary-row">
+            <span>Original Price</span>
+            <span id="csOriginal"></span>
+          </div>
+          <div class="coupon-summary-row">
+            <span id="csDiscountLabel">Discount</span>
+            <span id="csDiscount" style="color:#4ade80;">— Rs. 0</span>
+          </div>
+          <div class="coupon-summary-total">
+            <span>Total Payable (COD)</span>
+            <span id="csTotal"></span>
+          </div>
+        </div>
+
         <button type="submit" class="submit-btn" id="submitBtn">
           Place My Order — Cash on Delivery
         </button>
@@ -2138,6 +2214,108 @@
   // Load products on page ready
   loadSiteProducts();
 
+  // ══════════════════════════════
+  //  COUPON SYSTEM
+  // ══════════════════════════════
+  let appliedCoupon = null; // { code, discount, finalTotal, type, value }
+
+  function getOrderTotal() {
+    const variantEl = document.querySelector('input[name="variant"]:checked');
+    const variantVal = variantEl ? variantEl.value : '';
+    const qty = parseInt(document.getElementById('fqty').value) || 1;
+    let price = 7000;
+    const v = variantVal.toLowerCase();
+    if (v.includes('8,500') || v.includes('golden aura'))   price = 8500;
+    else if (v.includes('8,000') || v.includes('imperial')) price = 8000;
+    else if (v.includes('7,000') || v.includes('pearl'))    price = 7000;
+    else {
+      const m = variantVal.match(/[\d,]+/);
+      if (m) price = parseInt(m[0].replace(/,/g,'')) || 7000;
+    }
+    return qty * price;
+  }
+
+  function resetCoupon() {
+    appliedCoupon = null;
+    document.getElementById('couponMsg').className     = 'coupon-msg';
+    document.getElementById('couponMsg').textContent   = '';
+    document.getElementById('couponSummary').classList.remove('visible');
+    document.getElementById('couponApplyBtn').textContent = 'Apply';
+    document.getElementById('couponApplyBtn').disabled = false;
+  }
+
+  async function applyCoupon() {
+    const code = document.getElementById('fcoupon').value.trim().toUpperCase();
+    if (!code) { showCouponMsg('Pehle coupon code likhein', 'error'); return; }
+
+    const orderTotal = getOrderTotal();
+    const btn = document.getElementById('couponApplyBtn');
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const res = await new Promise((resolve, reject) => {
+        const cbName = '__coupon_cb_' + Date.now();
+        const params = 'action=validateCoupon&code=' + encodeURIComponent(code) +
+                       '&orderTotal=' + orderTotal + '&callback=' + cbName;
+        window[cbName] = function(data) {
+          delete window[cbName];
+          const s = document.getElementById('coupon-jsonp');
+          if (s) s.remove();
+          resolve(data);
+        };
+        const oldS = document.getElementById('coupon-jsonp');
+        if (oldS) oldS.remove();
+        const script = document.createElement('script');
+        script.id  = 'coupon-jsonp';
+        script.src = SCRIPT_URL + '?' + params;
+        script.onerror = () => reject(new Error('Network error'));
+        document.body.appendChild(script);
+        setTimeout(() => reject(new Error('Timeout')), 10000);
+      });
+
+      if (res.valid) {
+        appliedCoupon = res;
+        const discountLabel = res.type === 'percent'
+          ? res.value + '% Discount (' + code + ')'
+          : 'Flat Discount (' + code + ')';
+
+        showCouponMsg('✅ ' + code + ' apply ho gaya! Rs. ' + res.discount.toLocaleString() + ' off', 'success');
+
+        document.getElementById('csOriginal').textContent      = 'Rs. ' + orderTotal.toLocaleString();
+        document.getElementById('csDiscountLabel').textContent = discountLabel;
+        document.getElementById('csDiscount').textContent      = '— Rs. ' + res.discount.toLocaleString();
+        document.getElementById('csTotal').textContent         = 'Rs. ' + res.finalTotal.toLocaleString();
+        document.getElementById('couponSummary').classList.add('visible');
+
+        btn.textContent = '✓ Applied';
+        btn.disabled    = true;
+      } else {
+        appliedCoupon = null;
+        showCouponMsg('❌ ' + res.error, 'error');
+        btn.textContent = 'Apply';
+        btn.disabled    = false;
+      }
+    } catch(err) {
+      showCouponMsg('❌ Network error — dobara try karein', 'error');
+      btn.textContent = 'Apply';
+      btn.disabled    = false;
+    }
+  }
+
+  function showCouponMsg(msg, type) {
+    const el = document.getElementById('couponMsg');
+    el.textContent = msg;
+    el.className   = 'coupon-msg ' + type;
+  }
+
+  // Recalculate if variant or qty changes
+  document.addEventListener('change', function(e) {
+    if (e.target.name === 'variant' || e.target.id === 'fqty') {
+      if (appliedCoupon) resetCoupon();
+    }
+  });
+
   // ── Order Submission ──
   document.getElementById('orderForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -2159,8 +2337,11 @@
     btn.textContent = '⏳ Saving order...';
     btn.disabled = true;
 
+    const couponCode     = appliedCoupon ? appliedCoupon.code     : '';
+    const discountAmount = appliedCoupon ? appliedCoupon.discount  : 0;
+
     // ── Method 1: fetch POST ──
-    const orderData = { name, phone, address, variant, quantity: qty, notes: notes || '' };
+    const orderData = { name, phone, address, variant, quantity: qty, notes: notes || '', couponCode, discountAmount };
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -2170,12 +2351,14 @@
 
     // ── Method 2: JSONP ──
     try {
-      const paramStr = 'name='     + encodeURIComponent(name)
-                     + '&phone='   + encodeURIComponent(phone)
-                     + '&address=' + encodeURIComponent(address)
-                     + '&variant=' + encodeURIComponent(variant)
-                     + '&quantity='+ encodeURIComponent(qty)
-                     + '&notes='   + encodeURIComponent(notes || '')
+      const paramStr = 'name='           + encodeURIComponent(name)
+                     + '&phone='         + encodeURIComponent(phone)
+                     + '&address='       + encodeURIComponent(address)
+                     + '&variant='       + encodeURIComponent(variant)
+                     + '&quantity='      + encodeURIComponent(qty)
+                     + '&notes='         + encodeURIComponent(notes || '')
+                     + '&couponCode='    + encodeURIComponent(couponCode)
+                     + '&discountAmount='+ encodeURIComponent(discountAmount)
                      + '&callback=handleOrderResponse';
 
       window.handleOrderResponse = function(response) {
@@ -2213,7 +2396,13 @@
     } catch(err) { console.warn('Form error:', err); }
 
     // WhatsApp
-    const msg = `Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ${variant}\n🔢 Qty: ${qty}\n👤 ${name}\n📞 ${phone}\n📍 ${address}${notes ? '\n📝 ' + notes : ''}\n\nCOD — Please confirm. Shukriya! ✨`;
+    const couponLine = couponCode
+      ? `\n🏷️ Coupon: ${couponCode} (Rs. ${discountAmount.toLocaleString()} off)`
+      : '';
+    const totalLine = appliedCoupon
+      ? `\n💰 Total: Rs. ${appliedCoupon.finalTotal.toLocaleString()} (after discount)`
+      : '';
+    const msg = `Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ${variant}\n🔢 Qty: ${qty}\n👤 ${name}\n📞 ${phone}\n📍 ${address}${couponLine}${totalLine}${notes ? '\n📝 ' + notes : ''}\n\nCOD — Please confirm. Shukriya! ✨`;
 
     const success = document.getElementById('orderSuccess');
     document.getElementById('successText').textContent = `Shukriya ${name}! ✅ Order save ho gaya.`;
@@ -2240,6 +2429,8 @@
       btn.textContent = 'Place My Order — Cash on Delivery';
       btn.disabled = false;
       btn.style.background = '';
+      resetCoupon();
+      document.getElementById('fcoupon').value = '';
     }, 5000);
   });
 </script>
