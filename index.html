@@ -1410,7 +1410,7 @@
       <div class="form-row-2">
         <div class="form-group">
           <label class="om-body form-label">Quantity</label>
-          <select id="om_qty" class="form-control">
+          <select id="om_qty" class="form-control" onchange="resetModalCoupon()">
             <option value="1">1 Set</option>
             <option value="2">2 Sets</option>
             <option value="3">3 Sets</option>
@@ -1421,6 +1421,45 @@
           <input type="text" id="om_notes" class="form-control" placeholder="Gift wrap, etc."/>
         </div>
       </div>
+
+      <!-- Coupon Field -->
+      <div style="display:flex; gap:0.8rem; align-items:flex-end; margin-bottom:1rem;">
+        <div class="form-group" style="flex:1; margin-bottom:0;">
+          <label class="om-body form-label">Coupon Code (Optional)</label>
+          <input type="text" id="om_coupon" class="form-control"
+                 placeholder="AURRA10"
+                 style="text-transform:uppercase; letter-spacing:0.08em;"
+                 oninput="this.value=this.value.toUpperCase(); resetModalCoupon();"/>
+        </div>
+        <button type="button" id="omCouponBtn" onclick="applyModalCoupon()"
+                style="background:transparent; border:1px solid rgba(201,168,76,0.5);
+                       color:var(--gold2); font-family:'Jost',sans-serif;
+                       font-size:0.6rem; font-weight:600; letter-spacing:0.15em;
+                       text-transform:uppercase; padding:0.65rem 1rem;
+                       cursor:pointer; transition:all 0.3s; white-space:nowrap; flex-shrink:0;">
+          Apply
+        </button>
+      </div>
+      <div id="omCouponMsg" style="font-size:0.75rem; margin-bottom:0.8rem; display:none;"></div>
+
+      <!-- Discount Summary -->
+      <div id="omCouponSummary" style="display:none; margin-bottom:1rem;
+           background:rgba(46,204,113,0.06); border:1px solid rgba(46,204,113,0.25); padding:0.8rem 1rem;">
+        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.3rem;">
+          <span style="color:rgba(255,255,255,0.5);">Original Price</span>
+          <span id="omCsOriginal" style="color:var(--gold2);"></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.3rem;">
+          <span id="omCsDiscLabel" style="color:rgba(255,255,255,0.5);">Discount</span>
+          <span id="omCsDiscount" style="color:#4ade80;"></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600;
+                    border-top:1px solid rgba(46,204,113,0.2); padding-top:0.5rem; margin-top:0.3rem;">
+          <span style="color:rgba(255,255,255,0.7);">Total (COD)</span>
+          <span id="omCsTotal" style="color:#4ade80; font-family:'Cormorant Garamond',serif; font-size:1rem;"></span>
+        </div>
+      </div>
+
       <button class="om-submit" id="omSubmitBtn" onclick="submitModalOrder()">
         Place My Order — Cash on Delivery
       </button>
@@ -1841,26 +1880,117 @@
   }
 
   // ── Order Modal ──
-  let _modalVariant = '';
+  let _modalVariant  = '';
+  let _modalPrice    = 0;
+  let _appliedModalCoupon = null;
+
+  function getModalOrderTotal() {
+    const qty = parseInt(document.getElementById('om_qty').value) || 1;
+    return _modalPrice * qty;
+  }
+
+  function resetModalCoupon() {
+    _appliedModalCoupon = null;
+    const msg  = document.getElementById('omCouponMsg');
+    const summ = document.getElementById('omCouponSummary');
+    const btn  = document.getElementById('omCouponBtn');
+    if (msg)  { msg.style.display = 'none'; msg.textContent = ''; }
+    if (summ) summ.style.display = 'none';
+    if (btn)  { btn.textContent = 'Apply'; btn.disabled = false; }
+  }
+
+  async function applyModalCoupon() {
+    const code = document.getElementById('om_coupon').value.trim().toUpperCase();
+    if (!code) { showModalCouponMsg('Pehle coupon code likhein', false); return; }
+
+    const orderTotal = getModalOrderTotal();
+    const btn = document.getElementById('omCouponBtn');
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const res = await new Promise((resolve, reject) => {
+        const cbName = '__mcoupon_' + Date.now();
+        const params = 'action=validateCoupon&code=' + encodeURIComponent(code)
+                     + '&orderTotal=' + orderTotal + '&callback=' + cbName;
+        window[cbName] = function(data) {
+          delete window[cbName];
+          const s = document.getElementById('mcoupon-jsonp');
+          if (s) s.remove();
+          resolve(data);
+        };
+        const old = document.getElementById('mcoupon-jsonp');
+        if (old) old.remove();
+        const script = document.createElement('script');
+        script.id  = 'mcoupon-jsonp';
+        script.src = SCRIPT_URL + '?' + params;
+        script.onerror = () => reject(new Error('Network error'));
+        document.body.appendChild(script);
+        setTimeout(() => reject(new Error('Timeout')), 10000);
+      });
+
+      if (res.valid) {
+        _appliedModalCoupon = res;
+        showModalCouponMsg('✅ ' + code + ' apply ho gaya! Rs. ' + res.discount.toLocaleString() + ' off', true);
+
+        const discLabel = res.type === 'percent'
+          ? res.value + '% Discount (' + code + ')'
+          : 'Flat Discount (' + code + ')';
+
+        document.getElementById('omCsOriginal').textContent  = 'Rs. ' + orderTotal.toLocaleString();
+        document.getElementById('omCsDiscLabel').textContent = discLabel;
+        document.getElementById('omCsDiscount').textContent  = '— Rs. ' + res.discount.toLocaleString();
+        document.getElementById('omCsTotal').textContent     = 'Rs. ' + res.finalTotal.toLocaleString();
+        document.getElementById('omCouponSummary').style.display = 'block';
+
+        btn.textContent = '✓ Applied';
+        btn.disabled    = true;
+      } else {
+        _appliedModalCoupon = null;
+        showModalCouponMsg('❌ ' + res.error, false);
+        btn.textContent = 'Apply';
+        btn.disabled    = false;
+      }
+    } catch(err) {
+      showModalCouponMsg('❌ Network error — dobara try karein', false);
+      btn.textContent = 'Apply';
+      btn.disabled    = false;
+    }
+  }
+
+  function showModalCouponMsg(msg, success) {
+    const el = document.getElementById('omCouponMsg');
+    el.textContent = msg;
+    el.style.color = success ? '#4ade80' : '#f87171';
+    el.style.display = 'block';
+  }
 
   function openOrderModal(name, price, img, tag) {
+    // price comes as formatted string like "8,500" — parse it
+    const cleanPrice = parseInt(String(price).replace(/,/g, '')) || 0;
     _modalVariant = name + ' — Rs. ' + price;
-    document.getElementById('omProductName').textContent = name;
+    _modalPrice   = cleanPrice;
+
+    document.getElementById('omProductName').textContent  = name;
     document.getElementById('omProductPrice').textContent = 'Rs. ' + price + ' / 3 Pcs Set';
     document.getElementById('omProductImg').src = img;
     document.getElementById('omProductImg').alt = name;
+
     // Reset form
-    document.getElementById('om_name').value = '';
-    document.getElementById('om_phone').value = '';
+    document.getElementById('om_name').value    = '';
+    document.getElementById('om_phone').value   = '';
     document.getElementById('om_phone').classList.remove('input-error');
     const phoneErr = document.getElementById('om_phone_err');
     if (phoneErr) phoneErr.classList.remove('visible');
     document.getElementById('om_address').value = '';
-    document.getElementById('om_qty').value = '1';
-    document.getElementById('om_notes').value = '';
+    document.getElementById('om_qty').value     = '1';
+    document.getElementById('om_notes').value   = '';
+    document.getElementById('om_coupon').value  = '';
     document.getElementById('omSuccess').style.display = 'none';
     document.getElementById('omSubmitBtn').textContent = 'Place My Order — Cash on Delivery';
-    document.getElementById('omSubmitBtn').disabled = false;
+    document.getElementById('omSubmitBtn').disabled    = false;
+    resetModalCoupon();
+
     document.getElementById('orderModal').classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('om_name').focus(), 300);
@@ -1902,8 +2032,12 @@
     btn.textContent = '⏳ Order save ho raha hai...';
     btn.disabled = true;
 
+    const omCouponCode     = _appliedModalCoupon ? _appliedModalCoupon.code     : '';
+    const omDiscountAmount = _appliedModalCoupon ? _appliedModalCoupon.discount  : 0;
+
     // ── Method 1: fetch POST (sabse reliable) ──
-    const orderData = { name, phone, address, variant, quantity: qty, notes: notes || '' };
+    const orderData = { name, phone, address, variant, quantity: qty, notes: notes || '',
+                        couponCode: omCouponCode, discountAmount: omDiscountAmount };
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -1914,12 +2048,14 @@
 
     // ── Method 2: JSONP fallback ──
     try {
-      const paramStr = 'name='     + encodeURIComponent(name)
-                     + '&phone='   + encodeURIComponent(phone)
-                     + '&address=' + encodeURIComponent(address)
-                     + '&variant=' + encodeURIComponent(variant)
-                     + '&quantity='+ encodeURIComponent(qty)
-                     + '&notes='   + encodeURIComponent(notes || '')
+      const paramStr = 'name='           + encodeURIComponent(name)
+                     + '&phone='         + encodeURIComponent(phone)
+                     + '&address='       + encodeURIComponent(address)
+                     + '&variant='       + encodeURIComponent(variant)
+                     + '&quantity='      + encodeURIComponent(qty)
+                     + '&notes='         + encodeURIComponent(notes || '')
+                     + '&couponCode='    + encodeURIComponent(omCouponCode)
+                     + '&discountAmount='+ encodeURIComponent(omDiscountAmount)
                      + '&callback=handleModalOrderResponse';
 
       window.handleModalOrderResponse = function(res) {
@@ -1962,28 +2098,32 @@
     } catch(e) {}
 
     // ── Show Order Slip ──
-    const whatsappMsg = 'Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ' + variant + '\n🔢 Qty: ' + qty + '\n👤 ' + name + '\n📞 ' + phone + '\n📍 ' + address + (notes ? '\n📝 ' + notes : '') + '\n\nCOD — Please confirm. Shukriya! ✨';
+    const omCouponLine = omCouponCode
+      ? `\n🏷️ Coupon: ${omCouponCode} (Rs. ${omDiscountAmount.toLocaleString()} off)`
+      : '';
+    const omTotalLine = _appliedModalCoupon
+      ? `\n💰 Total: Rs. ${_appliedModalCoupon.finalTotal.toLocaleString()} (after discount)`
+      : '';
+    const whatsappMsg = `Assalam o Alaikum! 🌟 Aurra Home Order:\n\n📦 ${variant}\n🔢 Qty: ${qty}\n👤 ${name}\n📞 ${phone}\n📍 ${address}${omCouponLine}${omTotalLine}${notes ? '\n📝 ' + notes : ''}\n\nCOD — Please confirm. Shukriya! ✨`;
 
     closeOrderModal();
-    setTimeout(() => showOrderSlip(name, phone, address, variant, qty, whatsappMsg), 300);
+    setTimeout(() => showOrderSlip(name, phone, address, variant, qty, whatsappMsg, _appliedModalCoupon), 300);
   }
 
-  function showOrderSlip(name, phone, address, variant, qty, waMsg) {
-    // Generate order number — timestamp based
+  function showOrderSlip(name, phone, address, variant, qty, waMsg, couponData) {
     const ts  = Date.now();
     const num = 'AH-' + String(ts).slice(-5);
 
-    // Parse price from variant string
     const priceMatch = variant.match(/([\d,]+)$/);
     const unitPrice  = priceMatch ? parseInt(priceMatch[1].replace(/,/g,'')) : 0;
-    const total      = unitPrice * parseInt(qty);
+    const original   = unitPrice * parseInt(qty);
+    const discount   = couponData ? couponData.discount   : 0;
+    const finalTotal = couponData ? couponData.finalTotal  : original;
 
-    // Date
     const now     = new Date();
     const dateStr = now.toLocaleDateString('en-PK', {day:'2-digit', month:'short', year:'numeric'})
                   + ' ' + now.toLocaleTimeString('en-PK', {hour:'2-digit', minute:'2-digit'});
 
-    // Fill slip
     document.getElementById('slipOrderNum').textContent  = '#' + num;
     document.getElementById('slipProduct').textContent   = variant.split(' — ')[0];
     document.getElementById('slipQty').textContent       = qty + ' Set' + (qty > 1 ? 's' : '');
@@ -1991,14 +2131,35 @@
     document.getElementById('slipPhone').textContent     = phone;
     document.getElementById('slipAddress').textContent   = address;
     document.getElementById('slipDate').textContent      = dateStr;
-    document.getElementById('slipTotal').textContent     = 'Rs. ' + total.toLocaleString();
+    document.getElementById('slipTotal').textContent     = 'Rs. ' + finalTotal.toLocaleString();
 
-    // WhatsApp button
+    // Show/hide coupon row in slip
+    let slipCouponRow = document.getElementById('slipCouponRow');
+    if (!slipCouponRow) {
+      // Create coupon row dynamically if not exists
+      const totalRow = document.getElementById('slipTotal').closest('tr') ||
+                       document.getElementById('slipTotal').parentElement;
+      slipCouponRow = document.createElement('div');
+      slipCouponRow.id = 'slipCouponRow';
+      slipCouponRow.style.cssText = 'display:flex; justify-content:space-between; font-size:0.75rem; margin-top:0.4rem; padding-top:0.4rem; border-top:1px dashed rgba(201,168,76,0.2);';
+      slipCouponRow.innerHTML = '<span style="color:rgba(255,255,255,0.5);">Coupon Discount</span><span id="slipCouponAmt" style="color:#4ade80;"></span>';
+      const slipTotalEl = document.getElementById('slipTotal');
+      if (slipTotalEl && slipTotalEl.parentElement) {
+        slipTotalEl.parentElement.insertBefore(slipCouponRow, slipTotalEl);
+      }
+    }
+    if (couponData && discount > 0) {
+      slipCouponRow.style.display = 'flex';
+      document.getElementById('slipCouponAmt').textContent =
+        '— Rs. ' + discount.toLocaleString() + ' (' + couponData.code + ')';
+    } else {
+      slipCouponRow.style.display = 'none';
+    }
+
     document.getElementById('slipWaBtn').onclick = function() {
       window.open('https://wa.me/923334809118?text=' + encodeURIComponent(waMsg), '_blank');
     };
 
-    // Show slip
     document.getElementById('slipModal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
